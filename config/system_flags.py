@@ -1,0 +1,2 @@
+USE_GEMINI = True
+USE_OLLAMA = False

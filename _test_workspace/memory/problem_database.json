@@ -1,0 +1,1265 @@
+{
+  "patterns": {
+    "on disable": [
+      {
+        "query": "click on disable Jarvis button",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 20.612,
+          "content": "{'content': \"\u274c Button 'disable jarvis button' not found on screen (best match: 'JARVIS' with 44% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:03:40.742725",
+        "success": true
+      }
+    ],
+    "disable jarvis": [
+      {
+        "query": "click on disable Jarvis button",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 20.612,
+          "content": "{'content': \"\u274c Button 'disable jarvis button' not found on screen (best match: 'JARVIS' with 44% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:03:40.748739",
+        "success": true
+      }
+    ],
+    "click on": [
+      {
+        "query": "click on disable Jarvis button",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 20.612,
+          "content": "{'content': \"\u274c Button 'disable jarvis button' not found on screen (best match: 'JARVIS' with 44% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:03:40.756753",
+        "success": true
+      }
+    ],
+    "jarvis button": [
+      {
+        "query": "click on disable Jarvis button",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 20.612,
+          "content": "{'content': \"\u274c Button 'disable jarvis button' not found on screen (best match: 'JARVIS' with 44% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:03:40.762263",
+        "success": true
+      },
+      {
+        "query": "click on the disable Jarvis button in the streamlet app\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 3.093,
+          "content": "{'content': \"\u274c Button 'disable jarvis button in the streamlet app\\n\\n\\n\\n**recent conversations:**\\n\\n\\n[system suggestion: ]' not found on screen (best match: 'Disable' with 14% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:08:03.139509",
+        "success": true
+      }
+    ],
+    "in the": [
+      {
+        "query": "click on the disable Jarvis button in the streamlet app\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 3.093,
+          "content": "{'content': \"\u274c Button 'disable jarvis button in the streamlet app\\n\\n\\n\\n**recent conversations:**\\n\\n\\n[system suggestion: ]' not found on screen (best match: 'Disable' with 14% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:08:03.136505",
+        "success": true
+      }
+    ],
+    "the streamlet": [
+      {
+        "query": "click on the disable Jarvis button in the streamlet app\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 3.093,
+          "content": "{'content': \"\u274c Button 'disable jarvis button in the streamlet app\\n\\n\\n\\n**recent conversations:**\\n\\n\\n[system suggestion: ]' not found on screen (best match: 'Disable' with 14% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:08:03.138507",
+        "success": true
+      }
+    ],
+    "**recent conversations:**": [
+      {
+        "query": "click on the disable Jarvis button in the streamlet app\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 3.093,
+          "content": "{'content': \"\u274c Button 'disable jarvis button in the streamlet app\\n\\n\\n\\n**recent conversations:**\\n\\n\\n[system suggestion: ]' not found on screen (best match: 'Disable' with 14% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:08:03.148564",
+        "success": true
+      },
+      {
+        "query": "case sensitive\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 23.954,
+          "content": "{'content': 'Okay, here\\'s the Python code for a case-sensitive palindrome check:\\n\\n```python\\ndef is_palindrome_case_sensitive(text):\\n  \"\"\"\\n  Checks if a given string is a palindrome, considering case.\\n\\n  A palindrome is a word, phrase, number, or other sequence of characters\\n  which reads the same backward as forward. This function treats\\n  \\'Racecar\\' and \\'racecar\\' as different (only \\'racecar\\' is a palindrome\\n  in this case).\\n\\n  Args:\\n    text: The string to check.\\n\\n  Returns:\\n    True if the string is a palindrome (case-sensitive), False otherwise.\\n  \"\"\"\\n  return text == text[::-1]\\n\\n# --- Examples ---\\nprint(f\"\\'madam\\' is a palindrome: {is_palindrome_case_sensitive(\\'madam\\')}\")         # True\\nprint(f\"\\'racecar\\' is a palindrome: {is_palindrome_case_sensitive(\\'racecar\\')}\")     # True\\nprint(f\"\\'hello\\' is a palindrome: {is_palindrome_case_sensitive(\\'hello\\')}\")         # False\\nprint(f\"\\'Level\\' is a palindrome: {is_palindrome_case_sensitive(\\'Level\\')}\")         # False (due to \\'L\\' vs \\'l\\')\\nprint(f\"\\'A\\' is a palindrome: {is_palindrome_case_sensitive(\\'A\\')}\")               # True\\nprint(f\"\\'\\' (empty string) is a palindrome: {is_palindrome_case_sensitive(\\'\\')}\")   # True (empty string is a palindrome)\\nprint(f\"\\'noon\\' is a palindrome: {is_palindrome_case_sensitive(\\'noon\\')}\")         # True\\nprint(f\"\\'Noon\\' is a palindrome: {is_palindrome_case_sensitive(\\'Noon\\')}\")         # False\\n```\\n\\n**Explanation:**\\n\\n1.  **`def is_palindrome_case_sensitive(text):`**: Defines a function that takes one argument, `text` (which is the string we want to check).\\n2.  **`return text == text[::-1]`**: This is the core of the logic.\\n    *   `text[::-1]` is a Python slice that reverses the string. It creates a new string that is the reverse of the original `text`.\\n    *   `text == ...` compares the original string (`text`) with its reversed version.\\n    *   If they are identical (character by character, including their case), the comparison returns `True`, indicating it\\'s a palindrome. Otherwise, it returns `False`.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T09:43:36.122541",
+        "success": true
+      },
+      {
+        "query": "yes \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 15.057,
+          "content": "{'content': 'Here\\'s the Python code to check if a string is a palindrome:\\n\\n```python\\ndef is_palindrome(s):\\n  \"\"\"\\n  Checks if a string is a palindrome.\\n\\n  A string is a palindrome if it reads the same forwards and backwards.\\n  This function ignores case and non-alphanumeric characters.\\n\\n  Args:\\n    s: The input string.\\n\\n  Returns:\\n    True if the string is a palindrome, False otherwise.\\n  \"\"\"\\n  # 1. Normalize the string: Convert to lowercase and remove non-alphanumeric characters\\n  cleaned_s = \"\".join(char for char in s if char.isalnum()).lower()\\n\\n  # 2. Compare the cleaned string with its reverse\\n  return cleaned_s == cleaned_s[::-1]\\n\\n# --- Examples ---\\nprint(f\"\\'racecar\\' is a palindrome: {is_palindrome(\\'racecar\\')}\")          # True\\nprint(f\"\\'hello\\' is a palindrome: {is_palindrome(\\'hello\\')}\")            # False\\nprint(f\"\\'Madam\\' is a palindrome: {is_palindrome(\\'Madam\\')}\")            # True (ignores case)\\nprint(f\"\\'A man, a plan, a canal: Panama\\' is a palindrome: {is_palindrome(\\'A man, a plan, a canal: Panama\\')}\") # True (ignores spaces and punctuation)\\nprint(f\"\\'Python\\' is a palindrome: {is_palindrome(\\'Python\\')}\")          # False\\nprint(f\"\\'\\' is a palindrome: {is_palindrome(\\'\\')}\")                      # True (empty string is a palindrome)\\nprint(f\"\\'a\\' is a palindrome: {is_palindrome(\\'a\\')}\")                    # True (single character is a palindrome)\\n```\\n\\n**Explanation:**\\n\\n1.  **`is_palindrome(s)` function:**\\n    *   It takes one argument, `s`, which is the string you want to check.\\n2.  **`cleaned_s = \"\".join(char for char in s if char.isalnum()).lower()`:**\\n    *   This is the most important step for a robust palindrome check.\\n    *   **`char for char in s if char.isalnum()`:** This is a generator expression that iterates through each character (`char`) in the input string `s`. It only keeps characters that are alphanumeric (letters `a-z`, `A-Z`, and numbers `0-9`). This effectively removes spaces, punctuation, and other symbols.\\n    *   **`\"\".join(...)`:** This joins all the filtered alphanumeric characters back into a single string.\\n    *   **`.lower()`:** This converts the entire resulting string to lowercase. This ensures that the check is case-insensitive (e.g., \"Madam\" is treated the same as \"madam\").\\n3.  **`return cleaned_s == cleaned_s[::-1]`:**\\n    *   **`cleaned_s[::-1]`:** This is a Python slice that reverses the `cleaned_s` string. The `[::-1]` syntax means \"start at the beginning, go to the end, with a step of -1\" (which effectively reverses it).\\n    *   The `==` operator then compares the original `cleaned_s` with its reversed version.\\n    *   If they are identical, the function returns `True` (it\\'s a palindrome); otherwise, it returns `False`.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T10:10:01.044255",
+        "success": true
+      },
+      {
+        "query": "only general\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 10.898,
+          "content": "{'content': 'Okay, for a general voice assistant in Python, we\\'ll need two main functionalities:\\n\\n1.  **Speech Recognition:** To convert your spoken words into text.\\n2.  **Text-to-Speech:** To convert the assistant\\'s text responses into spoken words.\\n\\nWe\\'ll use the following libraries:\\n*   `speech_recognition`: For recognizing speech.\\n*   `pyttsx3`: For text-to-speech (works offline).\\n\\nHere\\'s a basic, general example:\\n\\n```python\\nimport speech_recognition as sr\\nimport pyttsx3\\nimport datetime\\nimport webbrowser\\nimport time\\n\\n# --- Initialize Text-to-Speech Engine ---\\nengine = pyttsx3.init()\\nvoices = engine.getProperty(\\'voices\\')\\n# You can change the voice here if you have multiple installed (e.g., voices[0] for male, voices[1] for female)\\nengine.setProperty(\\'voice\\', voices[1].id) # Often voice[0] is male, voice[1] is female depending on OS/install\\n\\ndef speak(text):\\n    \"\"\"Converts text to speech and speaks it.\"\"\"\\n    print(f\"Assistant: {text}\")\\n    engine.say(text)\\n    engine.runAndWait()\\n\\ndef listen():\\n    \"\"\"Listens for audio input from the microphone and converts it to text.\"\"\"\\n    recognizer = sr.Recognizer()\\n    with sr.Microphone() as source:\\n        print(\"Listening...\")\\n        recognizer.adjust_for_ambient_noise(source, duration=1) # Adjust for ambient noise\\n        audio = recognizer.listen(source)\\n\\n    try:\\n        print(\"Recognizing...\")\\n        command = recognizer.recognize_google(audio)\\n        print(f\"You said: {command}\")\\n        return command.lower() # Return command in lowercase for easier processing\\n    except sr.UnknownValueError:\\n        print(\"Sorry, I could not understand what you said.\")\\n        return \"\"\\n    except sr.RequestError:\\n        print(\"Sorry, my speech service is down. Please check your internet connection.\")\\n        return \"\"\\n\\ndef process_command(command):\\n    \"\"\"Processes the recognized command and responds.\"\"\"\\n    if \"hello\" in command or \"hi\" in command:\\n        speak(\"Hello there! How can I help you?\")\\n    elif \"how are you\" in command:\\n        speak(\"I am just a program, but I\\'m doing well, thank you!\")\\n    elif \"what time is it\" in command:\\n        current_time = datetime.datetime.now().strftime(\"%I:%M %p\")\\n        speak(f\"The current time is {current_time}\")\\n    elif \"what is your name\" in command:\\n        speak(\"I am your simple Python voice assistant.\")\\n    elif \"search\" in command:\\n        speak(\"What would you like me to search for?\")\\n        query = listen()\\n        if query:\\n            search_url = f\"https://www.google.com/search?q={query}\"\\n            speak(f\"Searching Google for {query}\")\\n            webbrowser.open(search_url)\\n    elif \"open youtube\" in command:\\n        speak(\"Opening YouTube.\")\\n        webbrowser.open(\"https://www.youtube.com\")\\n    elif \"exit\" in command or \"stop\" in command or \"goodbye\" in command:\\n        speak(\"Goodbye! Have a great day.\")\\n        return True # Signal to end the program\\n    elif not command: # If command is empty (e.g., due to recognition error)\\n        speak(\"I didn\\'t catch that. Could you please repeat?\")\\n    else:\\n        speak(\"I\\'m sorry, I don\\'t know how to do that yet.\")\\n    return False # Signal to continue the program\\n\\ndef main():\\n    \"\"\"Main function to run the voice assistant.\"\"\"\\n    speak(\"Hello, I am your voice assistant. How can I help you?\")\\n    while True:\\n        command = listen()\\n        if command: # Only process if a command was recognized\\n            if process_command(command):\\n                break\\n        time.sleep(1) # Small delay to prevent continuous listening issues\\n\\nif __name__ == \"__main__\":\\n    main()\\n```\\n\\n### How to use it:\\n\\n1.  **Install Libraries:**\\n    Open your terminal or command prompt and run:\\n    ```bash\\n    pip install SpeechRecognition pyttsx3\\n    ```\\n    *   **For `pyttsx3` on Linux**, you might also need `espeak`: `sudo apt-get install espeak`\\n    *   **For `pyttsx3` on Mac**, you might need `brew install espeak` (if using Homebrew).\\n    *   **For `pyttsx3` on Windows**, it usually works out of the box by using built-in SAPI5 voices.\\n2.  **Run the Code:**\\n    Save the code as a `.py` file (e.g., `assistant.py`) and run it from your terminal:\\n    ```bash\\n    python assistant.py\\n    ```\\n\\n### What this code does:\\n\\n*   **`speak(text)`:** Takes text and speaks it aloud using `pyttsx3`.\\n*   **`listen()`:** Uses `speech_recognition` to listen through your microphone, converts the audio to text using Google\\'s Web Speech API (requires internet connection for this part), and returns the text. It also includes basic error handling.\\n*   **`process_command(command)`:** Checks the recognized command for keywords and performs simple actions:\\n    *   Responds to \"hello\", \"how are you\", \"what time is it\", \"what is your name\".\\n    *   Can initiate a Google search.\\n    *   Can open YouTube.\\n    *   Exits if you say \"exit\", \"stop\", or \"goodbye\".\\n*   **`main()`:** The core loop that continuously listens, processes commands, and responds until you tell it to stop.\\n\\nThis is a good starting point for a general voice assistant. You can expand `process_command` with many more features as you learn more!'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T10:23:44.739118",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the  all technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 5.661,
+          "content": "{'content': 'The technical skills listed in the document are:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:28:30.884102",
+        "success": true
+      },
+      {
+        "query": "nya nmeam ei si sa daid\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 2.794,
+          "content": "{'content': 'His name is Aditya Verma.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:33:32.160511",
+        "success": true
+      },
+      {
+        "query": "handling space\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 96.145,
+          "content": "{'content': 'Okay, here are a few common ways to reverse a string in Python while correctly handling spaces (meaning spaces will be reversed along with the other characters, maintaining their relative positions in the reversed string).\\n\\nThe simplest and most \"Pythonic\" way is using slicing:\\n\\n### Method 1: Using String Slicing (Most Pythonic)\\n\\nThis is the most concise and generally preferred method.\\n\\n```python\\ndef reverse_string_with_spaces(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using slicing.\\n  \"\"\"\\n  return s[::-1]\\n\\n# --- Examples ---\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\'hello world\\')}\\'\")\\n# Expected output: \\'dlrow olleh\\'\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\' Python is fun \\')}\\'\")\\n# Expected output: \\' nuf si nohtyP \\'\\n\\nprint(f\"\\\\nOriginal: \\'leading  and  trailing  spaces\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\'leading  and  trailing  spaces\\')}\\'\")\\n# Expected output: \\'secaps  gniliart  dna  gnidael\\'\\n```\\n\\n### Method 2: Using a Loop\\n\\nThis method builds the reversed string character by character.\\n\\n```python\\ndef reverse_string_with_spaces_loop(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using a loop.\\n  \"\"\"\\n  reversed_s = \"\"\\n  for char in s:\\n    reversed_s = char + reversed_s # Prepend each character\\n  return reversed_s\\n\\n# --- Examples ---\\nprint(f\"\\\\n--- Using a Loop ---\")\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_loop(\\'hello world\\')}\\'\")\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_loop(\\' Python is fun \\')}\\'\")\\n```\\n\\n### Method 3: Using `reversed()` and `join()`\\n\\nThis method first gets an iterator that yields characters in reverse order, then joins them.\\n\\n```python\\ndef reverse_string_with_spaces_join(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using reversed() and join().\\n  \"\"\"\\n  return \"\".join(reversed(s))\\n\\n# --- Examples ---\\nprint(f\"\\\\n--- Using reversed() and join() ---\")\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_join(\\'hello world\\')}\\'\")\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_join(\\' Python is fun \\')}\\'\")\\n```\\n\\nAll these methods handle spaces correctly by treating them as regular characters in the string reversal process. For simplicity and performance, **Method 1 (slicing)** is generally the best choice in Python.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T21:08:08.963654",
+        "success": true
+      },
+      {
+        "query": "hello bro \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 86.881,
+          "content": "{'content': \"Hey there!\\n\\nWhat can I help you with today? Do you have another Python question, or anything else you'd like to discuss?\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T21:10:42.725434",
+        "success": true
+      },
+      {
+        "query": "from pdf explain my project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 7.85,
+          "content": "{'content': \"I apologize, but I do not have access to the PDF document you are referring to in this current interaction. My memory of previous attachments doesn't persist across turns.\\n\\nTo explain your projects, please upload or paste the relevant section of your PDF document here.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:38:56.996465",
+        "success": true
+      },
+      {
+        "query": "from pdf explain my projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 2.368,
+          "content": "{'content': \"I apologize, but I still do not have access to the PDF document. Each interaction is separate, and I don't retain memory of attachments from previous turns.\\n\\nTo explain your projects, **please upload or paste the relevant project descriptions from your PDF here.** Once you provide the text, I'll be happy to explain them.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:40:21.668232",
+        "success": true
+      },
+      {
+        "query": "give me the normal distribution formula\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.85,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 48.161352321s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '48s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:02:12.869627",
+        "success": true
+      }
+    ],
+    "the disable": [
+      {
+        "query": "click on the disable Jarvis button in the streamlet app\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "autoclicker",
+          "response_time": 3.093,
+          "content": "{'content': \"\u274c Button 'disable jarvis button in the streamlet app\\n\\n\\n\\n**recent conversations:**\\n\\n\\n[system suggestion: ]' not found on screen (best match: 'Disable' with 14% confidence)\"}",
+          "error": null
+        },
+        "agent": "autoclicker",
+        "timestamp": "2026-03-31T00:08:03.151027",
+        "success": true
+      }
+    ],
+    "case sensitive": [
+      {
+        "query": "case sensitive\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 23.954,
+          "content": "{'content': 'Okay, here\\'s the Python code for a case-sensitive palindrome check:\\n\\n```python\\ndef is_palindrome_case_sensitive(text):\\n  \"\"\"\\n  Checks if a given string is a palindrome, considering case.\\n\\n  A palindrome is a word, phrase, number, or other sequence of characters\\n  which reads the same backward as forward. This function treats\\n  \\'Racecar\\' and \\'racecar\\' as different (only \\'racecar\\' is a palindrome\\n  in this case).\\n\\n  Args:\\n    text: The string to check.\\n\\n  Returns:\\n    True if the string is a palindrome (case-sensitive), False otherwise.\\n  \"\"\"\\n  return text == text[::-1]\\n\\n# --- Examples ---\\nprint(f\"\\'madam\\' is a palindrome: {is_palindrome_case_sensitive(\\'madam\\')}\")         # True\\nprint(f\"\\'racecar\\' is a palindrome: {is_palindrome_case_sensitive(\\'racecar\\')}\")     # True\\nprint(f\"\\'hello\\' is a palindrome: {is_palindrome_case_sensitive(\\'hello\\')}\")         # False\\nprint(f\"\\'Level\\' is a palindrome: {is_palindrome_case_sensitive(\\'Level\\')}\")         # False (due to \\'L\\' vs \\'l\\')\\nprint(f\"\\'A\\' is a palindrome: {is_palindrome_case_sensitive(\\'A\\')}\")               # True\\nprint(f\"\\'\\' (empty string) is a palindrome: {is_palindrome_case_sensitive(\\'\\')}\")   # True (empty string is a palindrome)\\nprint(f\"\\'noon\\' is a palindrome: {is_palindrome_case_sensitive(\\'noon\\')}\")         # True\\nprint(f\"\\'Noon\\' is a palindrome: {is_palindrome_case_sensitive(\\'Noon\\')}\")         # False\\n```\\n\\n**Explanation:**\\n\\n1.  **`def is_palindrome_case_sensitive(text):`**: Defines a function that takes one argument, `text` (which is the string we want to check).\\n2.  **`return text == text[::-1]`**: This is the core of the logic.\\n    *   `text[::-1]` is a Python slice that reverses the string. It creates a new string that is the reverse of the original `text`.\\n    *   `text == ...` compares the original string (`text`) with its reversed version.\\n    *   If they are identical (character by character, including their case), the comparison returns `True`, indicating it\\'s a palindrome. Otherwise, it returns `False`.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T09:43:36.120541",
+        "success": true
+      }
+    ],
+    "sensitive **recent": [
+      {
+        "query": "case sensitive\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 23.954,
+          "content": "{'content': 'Okay, here\\'s the Python code for a case-sensitive palindrome check:\\n\\n```python\\ndef is_palindrome_case_sensitive(text):\\n  \"\"\"\\n  Checks if a given string is a palindrome, considering case.\\n\\n  A palindrome is a word, phrase, number, or other sequence of characters\\n  which reads the same backward as forward. This function treats\\n  \\'Racecar\\' and \\'racecar\\' as different (only \\'racecar\\' is a palindrome\\n  in this case).\\n\\n  Args:\\n    text: The string to check.\\n\\n  Returns:\\n    True if the string is a palindrome (case-sensitive), False otherwise.\\n  \"\"\"\\n  return text == text[::-1]\\n\\n# --- Examples ---\\nprint(f\"\\'madam\\' is a palindrome: {is_palindrome_case_sensitive(\\'madam\\')}\")         # True\\nprint(f\"\\'racecar\\' is a palindrome: {is_palindrome_case_sensitive(\\'racecar\\')}\")     # True\\nprint(f\"\\'hello\\' is a palindrome: {is_palindrome_case_sensitive(\\'hello\\')}\")         # False\\nprint(f\"\\'Level\\' is a palindrome: {is_palindrome_case_sensitive(\\'Level\\')}\")         # False (due to \\'L\\' vs \\'l\\')\\nprint(f\"\\'A\\' is a palindrome: {is_palindrome_case_sensitive(\\'A\\')}\")               # True\\nprint(f\"\\'\\' (empty string) is a palindrome: {is_palindrome_case_sensitive(\\'\\')}\")   # True (empty string is a palindrome)\\nprint(f\"\\'noon\\' is a palindrome: {is_palindrome_case_sensitive(\\'noon\\')}\")         # True\\nprint(f\"\\'Noon\\' is a palindrome: {is_palindrome_case_sensitive(\\'Noon\\')}\")         # False\\n```\\n\\n**Explanation:**\\n\\n1.  **`def is_palindrome_case_sensitive(text):`**: Defines a function that takes one argument, `text` (which is the string we want to check).\\n2.  **`return text == text[::-1]`**: This is the core of the logic.\\n    *   `text[::-1]` is a Python slice that reverses the string. It creates a new string that is the reverse of the original `text`.\\n    *   `text == ...` compares the original string (`text`) with its reversed version.\\n    *   If they are identical (character by character, including their case), the comparison returns `True`, indicating it\\'s a palindrome. Otherwise, it returns `False`.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T09:43:36.124801",
+        "success": true
+      }
+    ],
+    "yes **recent": [
+      {
+        "query": "yes \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 15.057,
+          "content": "{'content': 'Here\\'s the Python code to check if a string is a palindrome:\\n\\n```python\\ndef is_palindrome(s):\\n  \"\"\"\\n  Checks if a string is a palindrome.\\n\\n  A string is a palindrome if it reads the same forwards and backwards.\\n  This function ignores case and non-alphanumeric characters.\\n\\n  Args:\\n    s: The input string.\\n\\n  Returns:\\n    True if the string is a palindrome, False otherwise.\\n  \"\"\"\\n  # 1. Normalize the string: Convert to lowercase and remove non-alphanumeric characters\\n  cleaned_s = \"\".join(char for char in s if char.isalnum()).lower()\\n\\n  # 2. Compare the cleaned string with its reverse\\n  return cleaned_s == cleaned_s[::-1]\\n\\n# --- Examples ---\\nprint(f\"\\'racecar\\' is a palindrome: {is_palindrome(\\'racecar\\')}\")          # True\\nprint(f\"\\'hello\\' is a palindrome: {is_palindrome(\\'hello\\')}\")            # False\\nprint(f\"\\'Madam\\' is a palindrome: {is_palindrome(\\'Madam\\')}\")            # True (ignores case)\\nprint(f\"\\'A man, a plan, a canal: Panama\\' is a palindrome: {is_palindrome(\\'A man, a plan, a canal: Panama\\')}\") # True (ignores spaces and punctuation)\\nprint(f\"\\'Python\\' is a palindrome: {is_palindrome(\\'Python\\')}\")          # False\\nprint(f\"\\'\\' is a palindrome: {is_palindrome(\\'\\')}\")                      # True (empty string is a palindrome)\\nprint(f\"\\'a\\' is a palindrome: {is_palindrome(\\'a\\')}\")                    # True (single character is a palindrome)\\n```\\n\\n**Explanation:**\\n\\n1.  **`is_palindrome(s)` function:**\\n    *   It takes one argument, `s`, which is the string you want to check.\\n2.  **`cleaned_s = \"\".join(char for char in s if char.isalnum()).lower()`:**\\n    *   This is the most important step for a robust palindrome check.\\n    *   **`char for char in s if char.isalnum()`:** This is a generator expression that iterates through each character (`char`) in the input string `s`. It only keeps characters that are alphanumeric (letters `a-z`, `A-Z`, and numbers `0-9`). This effectively removes spaces, punctuation, and other symbols.\\n    *   **`\"\".join(...)`:** This joins all the filtered alphanumeric characters back into a single string.\\n    *   **`.lower()`:** This converts the entire resulting string to lowercase. This ensures that the check is case-insensitive (e.g., \"Madam\" is treated the same as \"madam\").\\n3.  **`return cleaned_s == cleaned_s[::-1]`:**\\n    *   **`cleaned_s[::-1]`:** This is a Python slice that reverses the `cleaned_s` string. The `[::-1]` syntax means \"start at the beginning, go to the end, with a step of -1\" (which effectively reverses it).\\n    *   The `==` operator then compares the original `cleaned_s` with its reversed version.\\n    *   If they are identical, the function returns `True` (it\\'s a palindrome); otherwise, it returns `False`.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T10:10:01.040249",
+        "success": true
+      }
+    ],
+    "only general": [
+      {
+        "query": "only general\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 10.898,
+          "content": "{'content': 'Okay, for a general voice assistant in Python, we\\'ll need two main functionalities:\\n\\n1.  **Speech Recognition:** To convert your spoken words into text.\\n2.  **Text-to-Speech:** To convert the assistant\\'s text responses into spoken words.\\n\\nWe\\'ll use the following libraries:\\n*   `speech_recognition`: For recognizing speech.\\n*   `pyttsx3`: For text-to-speech (works offline).\\n\\nHere\\'s a basic, general example:\\n\\n```python\\nimport speech_recognition as sr\\nimport pyttsx3\\nimport datetime\\nimport webbrowser\\nimport time\\n\\n# --- Initialize Text-to-Speech Engine ---\\nengine = pyttsx3.init()\\nvoices = engine.getProperty(\\'voices\\')\\n# You can change the voice here if you have multiple installed (e.g., voices[0] for male, voices[1] for female)\\nengine.setProperty(\\'voice\\', voices[1].id) # Often voice[0] is male, voice[1] is female depending on OS/install\\n\\ndef speak(text):\\n    \"\"\"Converts text to speech and speaks it.\"\"\"\\n    print(f\"Assistant: {text}\")\\n    engine.say(text)\\n    engine.runAndWait()\\n\\ndef listen():\\n    \"\"\"Listens for audio input from the microphone and converts it to text.\"\"\"\\n    recognizer = sr.Recognizer()\\n    with sr.Microphone() as source:\\n        print(\"Listening...\")\\n        recognizer.adjust_for_ambient_noise(source, duration=1) # Adjust for ambient noise\\n        audio = recognizer.listen(source)\\n\\n    try:\\n        print(\"Recognizing...\")\\n        command = recognizer.recognize_google(audio)\\n        print(f\"You said: {command}\")\\n        return command.lower() # Return command in lowercase for easier processing\\n    except sr.UnknownValueError:\\n        print(\"Sorry, I could not understand what you said.\")\\n        return \"\"\\n    except sr.RequestError:\\n        print(\"Sorry, my speech service is down. Please check your internet connection.\")\\n        return \"\"\\n\\ndef process_command(command):\\n    \"\"\"Processes the recognized command and responds.\"\"\"\\n    if \"hello\" in command or \"hi\" in command:\\n        speak(\"Hello there! How can I help you?\")\\n    elif \"how are you\" in command:\\n        speak(\"I am just a program, but I\\'m doing well, thank you!\")\\n    elif \"what time is it\" in command:\\n        current_time = datetime.datetime.now().strftime(\"%I:%M %p\")\\n        speak(f\"The current time is {current_time}\")\\n    elif \"what is your name\" in command:\\n        speak(\"I am your simple Python voice assistant.\")\\n    elif \"search\" in command:\\n        speak(\"What would you like me to search for?\")\\n        query = listen()\\n        if query:\\n            search_url = f\"https://www.google.com/search?q={query}\"\\n            speak(f\"Searching Google for {query}\")\\n            webbrowser.open(search_url)\\n    elif \"open youtube\" in command:\\n        speak(\"Opening YouTube.\")\\n        webbrowser.open(\"https://www.youtube.com\")\\n    elif \"exit\" in command or \"stop\" in command or \"goodbye\" in command:\\n        speak(\"Goodbye! Have a great day.\")\\n        return True # Signal to end the program\\n    elif not command: # If command is empty (e.g., due to recognition error)\\n        speak(\"I didn\\'t catch that. Could you please repeat?\")\\n    else:\\n        speak(\"I\\'m sorry, I don\\'t know how to do that yet.\")\\n    return False # Signal to continue the program\\n\\ndef main():\\n    \"\"\"Main function to run the voice assistant.\"\"\"\\n    speak(\"Hello, I am your voice assistant. How can I help you?\")\\n    while True:\\n        command = listen()\\n        if command: # Only process if a command was recognized\\n            if process_command(command):\\n                break\\n        time.sleep(1) # Small delay to prevent continuous listening issues\\n\\nif __name__ == \"__main__\":\\n    main()\\n```\\n\\n### How to use it:\\n\\n1.  **Install Libraries:**\\n    Open your terminal or command prompt and run:\\n    ```bash\\n    pip install SpeechRecognition pyttsx3\\n    ```\\n    *   **For `pyttsx3` on Linux**, you might also need `espeak`: `sudo apt-get install espeak`\\n    *   **For `pyttsx3` on Mac**, you might need `brew install espeak` (if using Homebrew).\\n    *   **For `pyttsx3` on Windows**, it usually works out of the box by using built-in SAPI5 voices.\\n2.  **Run the Code:**\\n    Save the code as a `.py` file (e.g., `assistant.py`) and run it from your terminal:\\n    ```bash\\n    python assistant.py\\n    ```\\n\\n### What this code does:\\n\\n*   **`speak(text)`:** Takes text and speaks it aloud using `pyttsx3`.\\n*   **`listen()`:** Uses `speech_recognition` to listen through your microphone, converts the audio to text using Google\\'s Web Speech API (requires internet connection for this part), and returns the text. It also includes basic error handling.\\n*   **`process_command(command)`:** Checks the recognized command for keywords and performs simple actions:\\n    *   Responds to \"hello\", \"how are you\", \"what time is it\", \"what is your name\".\\n    *   Can initiate a Google search.\\n    *   Can open YouTube.\\n    *   Exits if you say \"exit\", \"stop\", or \"goodbye\".\\n*   **`main()`:** The core loop that continuously listens, processes commands, and responds until you tell it to stop.\\n\\nThis is a good starting point for a general voice assistant. You can expand `process_command` with many more features as you learn more!'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T10:23:44.735118",
+        "success": true
+      }
+    ],
+    "general **recent": [
+      {
+        "query": "only general\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 10.898,
+          "content": "{'content': 'Okay, for a general voice assistant in Python, we\\'ll need two main functionalities:\\n\\n1.  **Speech Recognition:** To convert your spoken words into text.\\n2.  **Text-to-Speech:** To convert the assistant\\'s text responses into spoken words.\\n\\nWe\\'ll use the following libraries:\\n*   `speech_recognition`: For recognizing speech.\\n*   `pyttsx3`: For text-to-speech (works offline).\\n\\nHere\\'s a basic, general example:\\n\\n```python\\nimport speech_recognition as sr\\nimport pyttsx3\\nimport datetime\\nimport webbrowser\\nimport time\\n\\n# --- Initialize Text-to-Speech Engine ---\\nengine = pyttsx3.init()\\nvoices = engine.getProperty(\\'voices\\')\\n# You can change the voice here if you have multiple installed (e.g., voices[0] for male, voices[1] for female)\\nengine.setProperty(\\'voice\\', voices[1].id) # Often voice[0] is male, voice[1] is female depending on OS/install\\n\\ndef speak(text):\\n    \"\"\"Converts text to speech and speaks it.\"\"\"\\n    print(f\"Assistant: {text}\")\\n    engine.say(text)\\n    engine.runAndWait()\\n\\ndef listen():\\n    \"\"\"Listens for audio input from the microphone and converts it to text.\"\"\"\\n    recognizer = sr.Recognizer()\\n    with sr.Microphone() as source:\\n        print(\"Listening...\")\\n        recognizer.adjust_for_ambient_noise(source, duration=1) # Adjust for ambient noise\\n        audio = recognizer.listen(source)\\n\\n    try:\\n        print(\"Recognizing...\")\\n        command = recognizer.recognize_google(audio)\\n        print(f\"You said: {command}\")\\n        return command.lower() # Return command in lowercase for easier processing\\n    except sr.UnknownValueError:\\n        print(\"Sorry, I could not understand what you said.\")\\n        return \"\"\\n    except sr.RequestError:\\n        print(\"Sorry, my speech service is down. Please check your internet connection.\")\\n        return \"\"\\n\\ndef process_command(command):\\n    \"\"\"Processes the recognized command and responds.\"\"\"\\n    if \"hello\" in command or \"hi\" in command:\\n        speak(\"Hello there! How can I help you?\")\\n    elif \"how are you\" in command:\\n        speak(\"I am just a program, but I\\'m doing well, thank you!\")\\n    elif \"what time is it\" in command:\\n        current_time = datetime.datetime.now().strftime(\"%I:%M %p\")\\n        speak(f\"The current time is {current_time}\")\\n    elif \"what is your name\" in command:\\n        speak(\"I am your simple Python voice assistant.\")\\n    elif \"search\" in command:\\n        speak(\"What would you like me to search for?\")\\n        query = listen()\\n        if query:\\n            search_url = f\"https://www.google.com/search?q={query}\"\\n            speak(f\"Searching Google for {query}\")\\n            webbrowser.open(search_url)\\n    elif \"open youtube\" in command:\\n        speak(\"Opening YouTube.\")\\n        webbrowser.open(\"https://www.youtube.com\")\\n    elif \"exit\" in command or \"stop\" in command or \"goodbye\" in command:\\n        speak(\"Goodbye! Have a great day.\")\\n        return True # Signal to end the program\\n    elif not command: # If command is empty (e.g., due to recognition error)\\n        speak(\"I didn\\'t catch that. Could you please repeat?\")\\n    else:\\n        speak(\"I\\'m sorry, I don\\'t know how to do that yet.\")\\n    return False # Signal to continue the program\\n\\ndef main():\\n    \"\"\"Main function to run the voice assistant.\"\"\"\\n    speak(\"Hello, I am your voice assistant. How can I help you?\")\\n    while True:\\n        command = listen()\\n        if command: # Only process if a command was recognized\\n            if process_command(command):\\n                break\\n        time.sleep(1) # Small delay to prevent continuous listening issues\\n\\nif __name__ == \"__main__\":\\n    main()\\n```\\n\\n### How to use it:\\n\\n1.  **Install Libraries:**\\n    Open your terminal or command prompt and run:\\n    ```bash\\n    pip install SpeechRecognition pyttsx3\\n    ```\\n    *   **For `pyttsx3` on Linux**, you might also need `espeak`: `sudo apt-get install espeak`\\n    *   **For `pyttsx3` on Mac**, you might need `brew install espeak` (if using Homebrew).\\n    *   **For `pyttsx3` on Windows**, it usually works out of the box by using built-in SAPI5 voices.\\n2.  **Run the Code:**\\n    Save the code as a `.py` file (e.g., `assistant.py`) and run it from your terminal:\\n    ```bash\\n    python assistant.py\\n    ```\\n\\n### What this code does:\\n\\n*   **`speak(text)`:** Takes text and speaks it aloud using `pyttsx3`.\\n*   **`listen()`:** Uses `speech_recognition` to listen through your microphone, converts the audio to text using Google\\'s Web Speech API (requires internet connection for this part), and returns the text. It also includes basic error handling.\\n*   **`process_command(command)`:** Checks the recognized command for keywords and performs simple actions:\\n    *   Responds to \"hello\", \"how are you\", \"what time is it\", \"what is your name\".\\n    *   Can initiate a Google search.\\n    *   Can open YouTube.\\n    *   Exits if you say \"exit\", \"stop\", or \"goodbye\".\\n*   **`main()`:** The core loop that continuously listens, processes commands, and responds until you tell it to stop.\\n\\nThis is a good starting point for a general voice assistant. You can expand `process_command` with many more features as you learn more!'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-03-31T10:23:44.737118",
+        "success": true
+      }
+    ],
+    "the all": [
+      {
+        "query": "from pdf give me the  all technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 5.661,
+          "content": "{'content': 'The technical skills listed in the document are:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:28:30.884102",
+        "success": true
+      }
+    ],
+    "intent:document": [
+      {
+        "query": "from pdf give me the  all technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 5.661,
+          "content": "{'content': 'The technical skills listed in the document are:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:28:30.884102",
+        "success": true
+      },
+      {
+        "query": "from pdf give me my technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.363,
+          "content": "{'content': 'Here are your technical skills from the document:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:36:48.119938",
+        "success": true
+      },
+      {
+        "query": "from pdf explain my project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 7.85,
+          "content": "{'content': \"I apologize, but I do not have access to the PDF document you are referring to in this current interaction. My memory of previous attachments doesn't persist across turns.\\n\\nTo explain your projects, please upload or paste the relevant section of your PDF document here.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:38:56.982442",
+        "success": true
+      },
+      {
+        "query": "from pdf explain my projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 2.368,
+          "content": "{'content': \"I apologize, but I still do not have access to the PDF document. Each interaction is separate, and I don't retain memory of attachments from previous turns.\\n\\nTo explain your projects, **please upload or paste the relevant project descriptions from your PDF here.** Once you provide the text, I'll be happy to explain them.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:40:21.652206",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.043,
+          "content": "{'content': 'Here are the projects mentioned in the document:\\n\\n*   **Multi AI Agent System**\\n    *   **Description:** \"Designed and developed a multi-agent AI system capable of handling voice commands, research, automated system operations, and intelligent decision-making.\"\\n    *   **Technologies:** Python, NLP, Deep Learning, Automation, Web Scraping, System Control\\n    *   **Status:** Ongoing\\n*   **AI-Driven Legal News Extraction & Summarization System**\\n    *   **Description:** \"Extracted and summarized daily Top 10 legal news, court updates, and notices from sajjadhusainlawassociates.com using automated NLP processing.\"\\n    *   **Technologies:** Python, NLP'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:41:19.823660",
+        "success": true
+      },
+      {
+        "query": "from pdf what is resume name \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 1.978,
+          "content": "{'content': 'Based on the information provided in our conversation, the resume name is **not mentioned**.\\n\\nThe previous information only contained details about two projects: \"Multi AI Agent System\" and \"AI-Driven Legal News Extraction & Summarization System.\"'}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:42:28.453401",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the summary \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 7.665,
+          "content": "{'content': \"Aditya Verma is an aspiring Data Scientist with expertise in Data Science, Machine Learning, and Deep Learning, skilled in technologies such as Random Forest, Gradient Boosting, CNNs, Python, TensorFlow, Keras, scikit-learn, and NLP.\\n\\nHe holds a B.Tech in Computer Science (Information Technology) from Dr. A.P.J. Abdul Kalam Technical University (2022-2026). His technical skills span programming languages (Python, MySQL, C), numerous libraries and frameworks (NumPy, Pandas, scikit-learn, TensorFlow, Keras, OpenCV, NLTK, Flask), technologies like Machine Learning, Deep Learning, NLP, Streamlit, FastAPI, REST APIs, and AWS, alongside various ML/DL techniques and tools like Power BI, Jupyter Notebook, and Git/GitHub.\\n\\nAditya's experience includes:\\n*   **Artificial Intelligence and Machine Learning at Eyerexus Private Limited (June 2026 \u2013 Present):** Working on AI projects, building intelligent systems, deploying machine learning models, and utilizing Python and AI frameworks.\\n*   **Data Science Intern at Difmo Private Limited (June 2025 \u2013 November 2025):** Conducted data cleaning, preprocessing, exploratory analysis, engineered machine learning models, and automated data workflows, achieving a 25% efficiency improvement.\\n\\nKey projects highlight his practical application of skills:\\n*   **Multi AI Agent System (Ongoing):** Designed and developed a multi-agent AI system for voice commands, research, automated operations, and intelligent decision-making, integrating features like browser control, file management, and web scraping using Python, NLP, and Deep Learning.\\n*   **AI-Based Diet Recommendation & Calorie Estimation System:** Currently building an AI-driven system for personalized nutrition and calorie analysis for children and adults, leveraging Python, ML, OpenAI, and Computer Vision.\"}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:43:37.002807",
+        "success": true
+      },
+      {
+        "query": "from pdf give me all technical skill in my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 179.439,
+          "content": "{'content': 'The document does not contain this information. The provided text is about \"Normal distribution\" and does not describe any technical skills on a resume.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-02T05:35:23.551048",
+        "success": true
+      }
+    ],
+    "give me": [
+      {
+        "query": "from pdf give me the  all technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 5.661,
+          "content": "{'content': 'The technical skills listed in the document are:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:28:30.884102",
+        "success": true
+      },
+      {
+        "query": "from pdf give me my technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.363,
+          "content": "{'content': 'Here are your technical skills from the document:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:36:48.122943",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.043,
+          "content": "{'content': 'Here are the projects mentioned in the document:\\n\\n*   **Multi AI Agent System**\\n    *   **Description:** \"Designed and developed a multi-agent AI system capable of handling voice commands, research, automated system operations, and intelligent decision-making.\"\\n    *   **Technologies:** Python, NLP, Deep Learning, Automation, Web Scraping, System Control\\n    *   **Status:** Ongoing\\n*   **AI-Driven Legal News Extraction & Summarization System**\\n    *   **Description:** \"Extracted and summarized daily Top 10 legal news, court updates, and notices from sajjadhusainlawassociates.com using automated NLP processing.\"\\n    *   **Technologies:** Python, NLP'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:41:19.830164",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the summary \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 7.665,
+          "content": "{'content': \"Aditya Verma is an aspiring Data Scientist with expertise in Data Science, Machine Learning, and Deep Learning, skilled in technologies such as Random Forest, Gradient Boosting, CNNs, Python, TensorFlow, Keras, scikit-learn, and NLP.\\n\\nHe holds a B.Tech in Computer Science (Information Technology) from Dr. A.P.J. Abdul Kalam Technical University (2022-2026). His technical skills span programming languages (Python, MySQL, C), numerous libraries and frameworks (NumPy, Pandas, scikit-learn, TensorFlow, Keras, OpenCV, NLTK, Flask), technologies like Machine Learning, Deep Learning, NLP, Streamlit, FastAPI, REST APIs, and AWS, alongside various ML/DL techniques and tools like Power BI, Jupyter Notebook, and Git/GitHub.\\n\\nAditya's experience includes:\\n*   **Artificial Intelligence and Machine Learning at Eyerexus Private Limited (June 2026 \u2013 Present):** Working on AI projects, building intelligent systems, deploying machine learning models, and utilizing Python and AI frameworks.\\n*   **Data Science Intern at Difmo Private Limited (June 2025 \u2013 November 2025):** Conducted data cleaning, preprocessing, exploratory analysis, engineered machine learning models, and automated data workflows, achieving a 25% efficiency improvement.\\n\\nKey projects highlight his practical application of skills:\\n*   **Multi AI Agent System (Ongoing):** Designed and developed a multi-agent AI system for voice commands, research, automated operations, and intelligent decision-making, integrating features like browser control, file management, and web scraping using Python, NLP, and Deep Learning.\\n*   **AI-Based Diet Recommendation & Calorie Estimation System:** Currently building an AI-driven system for personalized nutrition and calorie analysis for children and adults, leveraging Python, ML, OpenAI, and Computer Vision.\"}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:43:37.007816",
+        "success": true
+      },
+      {
+        "query": "give me my all project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 2.803,
+          "content": "{'content': 'Here are all your projects:\\n\\n*   Multi AI Agent System\\n*   AI-Based Diet Recommendation & Calorie Estimation System\\n*   AI-Driven Legal News Extraction & Summarization System\\n*   Microfinance Loan Default Prediction\\n*   Breast Cancer Detection'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T22:58:45.868721",
+        "success": true
+      },
+      {
+        "query": "give me the normal distribution formula\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.85,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 48.161352321s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '48s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:02:12.845093",
+        "success": true
+      },
+      {
+        "query": "give me the project details of my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.807,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 15.837189881s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:04:45.245035",
+        "success": true
+      }
+    ],
+    "me the": [
+      {
+        "query": "from pdf give me the  all technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 5.661,
+          "content": "{'content': 'The technical skills listed in the document are:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:28:30.898469",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.043,
+          "content": "{'content': 'Here are the projects mentioned in the document:\\n\\n*   **Multi AI Agent System**\\n    *   **Description:** \"Designed and developed a multi-agent AI system capable of handling voice commands, research, automated system operations, and intelligent decision-making.\"\\n    *   **Technologies:** Python, NLP, Deep Learning, Automation, Web Scraping, System Control\\n    *   **Status:** Ongoing\\n*   **AI-Driven Legal News Extraction & Summarization System**\\n    *   **Description:** \"Extracted and summarized daily Top 10 legal news, court updates, and notices from sajjadhusainlawassociates.com using automated NLP processing.\"\\n    *   **Technologies:** Python, NLP'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:41:19.836178",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the summary \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 7.665,
+          "content": "{'content': \"Aditya Verma is an aspiring Data Scientist with expertise in Data Science, Machine Learning, and Deep Learning, skilled in technologies such as Random Forest, Gradient Boosting, CNNs, Python, TensorFlow, Keras, scikit-learn, and NLP.\\n\\nHe holds a B.Tech in Computer Science (Information Technology) from Dr. A.P.J. Abdul Kalam Technical University (2022-2026). His technical skills span programming languages (Python, MySQL, C), numerous libraries and frameworks (NumPy, Pandas, scikit-learn, TensorFlow, Keras, OpenCV, NLTK, Flask), technologies like Machine Learning, Deep Learning, NLP, Streamlit, FastAPI, REST APIs, and AWS, alongside various ML/DL techniques and tools like Power BI, Jupyter Notebook, and Git/GitHub.\\n\\nAditya's experience includes:\\n*   **Artificial Intelligence and Machine Learning at Eyerexus Private Limited (June 2026 \u2013 Present):** Working on AI projects, building intelligent systems, deploying machine learning models, and utilizing Python and AI frameworks.\\n*   **Data Science Intern at Difmo Private Limited (June 2025 \u2013 November 2025):** Conducted data cleaning, preprocessing, exploratory analysis, engineered machine learning models, and automated data workflows, achieving a 25% efficiency improvement.\\n\\nKey projects highlight his practical application of skills:\\n*   **Multi AI Agent System (Ongoing):** Designed and developed a multi-agent AI system for voice commands, research, automated operations, and intelligent decision-making, integrating features like browser control, file management, and web scraping using Python, NLP, and Deep Learning.\\n*   **AI-Based Diet Recommendation & Calorie Estimation System:** Currently building an AI-driven system for personalized nutrition and calorie analysis for children and adults, leveraging Python, ML, OpenAI, and Computer Vision.\"}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:43:37.009819",
+        "success": true
+      },
+      {
+        "query": "give me the normal distribution formula\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.85,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 48.161352321s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '48s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:02:12.859111",
+        "success": true
+      }
+    ],
+    "ei si": [
+      {
+        "query": "nya nmeam ei si sa daid\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 2.794,
+          "content": "{'content': 'His name is Aditya Verma.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:33:32.156251",
+        "success": true
+      }
+    ],
+    "daid **recent": [
+      {
+        "query": "nya nmeam ei si sa daid\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 2.794,
+          "content": "{'content': 'His name is Aditya Verma.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:33:32.167767",
+        "success": true
+      }
+    ],
+    "si sa": [
+      {
+        "query": "nya nmeam ei si sa daid\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 2.794,
+          "content": "{'content': 'His name is Aditya Verma.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:33:32.168766",
+        "success": true
+      }
+    ],
+    "nya nmeam": [
+      {
+        "query": "nya nmeam ei si sa daid\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 2.794,
+          "content": "{'content': 'His name is Aditya Verma.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-03-31T10:33:32.170766",
+        "success": true
+      }
+    ],
+    "space **recent": [
+      {
+        "query": "handling space\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 96.145,
+          "content": "{'content': 'Okay, here are a few common ways to reverse a string in Python while correctly handling spaces (meaning spaces will be reversed along with the other characters, maintaining their relative positions in the reversed string).\\n\\nThe simplest and most \"Pythonic\" way is using slicing:\\n\\n### Method 1: Using String Slicing (Most Pythonic)\\n\\nThis is the most concise and generally preferred method.\\n\\n```python\\ndef reverse_string_with_spaces(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using slicing.\\n  \"\"\"\\n  return s[::-1]\\n\\n# --- Examples ---\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\'hello world\\')}\\'\")\\n# Expected output: \\'dlrow olleh\\'\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\' Python is fun \\')}\\'\")\\n# Expected output: \\' nuf si nohtyP \\'\\n\\nprint(f\"\\\\nOriginal: \\'leading  and  trailing  spaces\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\'leading  and  trailing  spaces\\')}\\'\")\\n# Expected output: \\'secaps  gniliart  dna  gnidael\\'\\n```\\n\\n### Method 2: Using a Loop\\n\\nThis method builds the reversed string character by character.\\n\\n```python\\ndef reverse_string_with_spaces_loop(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using a loop.\\n  \"\"\"\\n  reversed_s = \"\"\\n  for char in s:\\n    reversed_s = char + reversed_s # Prepend each character\\n  return reversed_s\\n\\n# --- Examples ---\\nprint(f\"\\\\n--- Using a Loop ---\")\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_loop(\\'hello world\\')}\\'\")\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_loop(\\' Python is fun \\')}\\'\")\\n```\\n\\n### Method 3: Using `reversed()` and `join()`\\n\\nThis method first gets an iterator that yields characters in reverse order, then joins them.\\n\\n```python\\ndef reverse_string_with_spaces_join(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using reversed() and join().\\n  \"\"\"\\n  return \"\".join(reversed(s))\\n\\n# --- Examples ---\\nprint(f\"\\\\n--- Using reversed() and join() ---\")\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_join(\\'hello world\\')}\\'\")\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_join(\\' Python is fun \\')}\\'\")\\n```\\n\\nAll these methods handle spaces correctly by treating them as regular characters in the string reversal process. For simplicity and performance, **Method 1 (slicing)** is generally the best choice in Python.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T21:08:08.960653",
+        "success": true
+      }
+    ],
+    "handling space": [
+      {
+        "query": "handling space\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 96.145,
+          "content": "{'content': 'Okay, here are a few common ways to reverse a string in Python while correctly handling spaces (meaning spaces will be reversed along with the other characters, maintaining their relative positions in the reversed string).\\n\\nThe simplest and most \"Pythonic\" way is using slicing:\\n\\n### Method 1: Using String Slicing (Most Pythonic)\\n\\nThis is the most concise and generally preferred method.\\n\\n```python\\ndef reverse_string_with_spaces(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using slicing.\\n  \"\"\"\\n  return s[::-1]\\n\\n# --- Examples ---\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\'hello world\\')}\\'\")\\n# Expected output: \\'dlrow olleh\\'\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\' Python is fun \\')}\\'\")\\n# Expected output: \\' nuf si nohtyP \\'\\n\\nprint(f\"\\\\nOriginal: \\'leading  and  trailing  spaces\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces(\\'leading  and  trailing  spaces\\')}\\'\")\\n# Expected output: \\'secaps  gniliart  dna  gnidael\\'\\n```\\n\\n### Method 2: Using a Loop\\n\\nThis method builds the reversed string character by character.\\n\\n```python\\ndef reverse_string_with_spaces_loop(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using a loop.\\n  \"\"\"\\n  reversed_s = \"\"\\n  for char in s:\\n    reversed_s = char + reversed_s # Prepend each character\\n  return reversed_s\\n\\n# --- Examples ---\\nprint(f\"\\\\n--- Using a Loop ---\")\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_loop(\\'hello world\\')}\\'\")\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_loop(\\' Python is fun \\')}\\'\")\\n```\\n\\n### Method 3: Using `reversed()` and `join()`\\n\\nThis method first gets an iterator that yields characters in reverse order, then joins them.\\n\\n```python\\ndef reverse_string_with_spaces_join(s):\\n  \"\"\"\\n  Reverses a string, including spaces, using reversed() and join().\\n  \"\"\"\\n  return \"\".join(reversed(s))\\n\\n# --- Examples ---\\nprint(f\"\\\\n--- Using reversed() and join() ---\")\\nprint(f\"Original: \\'hello world\\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_join(\\'hello world\\')}\\'\")\\n\\nprint(f\"\\\\nOriginal: \\' Python is fun \\'\")\\nprint(f\"Reversed: \\'{reverse_string_with_spaces_join(\\' Python is fun \\')}\\'\")\\n```\\n\\nAll these methods handle spaces correctly by treating them as regular characters in the string reversal process. For simplicity and performance, **Method 1 (slicing)** is generally the best choice in Python.'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T21:08:08.961651",
+        "success": true
+      }
+    ],
+    "hello bro": [
+      {
+        "query": "hello bro \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 86.881,
+          "content": "{'content': \"Hey there!\\n\\nWhat can I help you with today? Do you have another Python question, or anything else you'd like to discuss?\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T21:10:42.709803",
+        "success": true
+      }
+    ],
+    "bro **recent": [
+      {
+        "query": "hello bro \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 86.881,
+          "content": "{'content': \"Hey there!\\n\\nWhat can I help you with today? Do you have another Python question, or anything else you'd like to discuss?\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T21:10:42.725434",
+        "success": true
+      }
+    ],
+    "my technical": [
+      {
+        "query": "from pdf give me my technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.363,
+          "content": "{'content': 'Here are your technical skills from the document:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:36:48.116933",
+        "success": true
+      }
+    ],
+    "me my": [
+      {
+        "query": "from pdf give me my technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.363,
+          "content": "{'content': 'Here are your technical skills from the document:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:36:48.121441",
+        "success": true
+      },
+      {
+        "query": "give me my all project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 2.803,
+          "content": "{'content': 'Here are all your projects:\\n\\n*   Multi AI Agent System\\n*   AI-Based Diet Recommendation & Calorie Estimation System\\n*   AI-Driven Legal News Extraction & Summarization System\\n*   Microfinance Loan Default Prediction\\n*   Breast Cancer Detection'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T22:58:45.865215",
+        "success": true
+      }
+    ],
+    "pdf give": [
+      {
+        "query": "from pdf give me my technical skill\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.363,
+          "content": "{'content': 'Here are your technical skills from the document:\\n\\n*   **Programming Languages:** Python, MySQL, C\\n*   **Libraries & Frameworks:** NumPy, Pandas, scikit-learn, Matplotlib, Seaborn, TensorFlow, Keras, OpenCV, NLTK, SpaCy, Flask\\n*   **Technologies & Platforms:** Machine Learning, Deep Learning, Natural Language Processing (NLP), Streamlit, FastAPI, REST APIs, Postman, Render, AWS\\n*   **Machine Learning & Deep Learning Techniques:** Supervised Learning, Unsupervised Learning, Ensemble Methods (Random Forest, Gradient Boosting, XGBoost), Feature Engineering, PCA, Dimensionality Reduction, ANN, CNN, RNN\\n*   **Tools & IDEs:** Power BI, Jupyter Notebook, Google Colab, PyCharm, VS Code, Git, GitHub, Kaggle, MS Excel'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:36:48.123945",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the summary \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 7.665,
+          "content": "{'content': \"Aditya Verma is an aspiring Data Scientist with expertise in Data Science, Machine Learning, and Deep Learning, skilled in technologies such as Random Forest, Gradient Boosting, CNNs, Python, TensorFlow, Keras, scikit-learn, and NLP.\\n\\nHe holds a B.Tech in Computer Science (Information Technology) from Dr. A.P.J. Abdul Kalam Technical University (2022-2026). His technical skills span programming languages (Python, MySQL, C), numerous libraries and frameworks (NumPy, Pandas, scikit-learn, TensorFlow, Keras, OpenCV, NLTK, Flask), technologies like Machine Learning, Deep Learning, NLP, Streamlit, FastAPI, REST APIs, and AWS, alongside various ML/DL techniques and tools like Power BI, Jupyter Notebook, and Git/GitHub.\\n\\nAditya's experience includes:\\n*   **Artificial Intelligence and Machine Learning at Eyerexus Private Limited (June 2026 \u2013 Present):** Working on AI projects, building intelligent systems, deploying machine learning models, and utilizing Python and AI frameworks.\\n*   **Data Science Intern at Difmo Private Limited (June 2025 \u2013 November 2025):** Conducted data cleaning, preprocessing, exploratory analysis, engineered machine learning models, and automated data workflows, achieving a 25% efficiency improvement.\\n\\nKey projects highlight his practical application of skills:\\n*   **Multi AI Agent System (Ongoing):** Designed and developed a multi-agent AI system for voice commands, research, automated operations, and intelligent decision-making, integrating features like browser control, file management, and web scraping using Python, NLP, and Deep Learning.\\n*   **AI-Based Diet Recommendation & Calorie Estimation System:** Currently building an AI-driven system for personalized nutrition and calorie analysis for children and adults, leveraging Python, ML, OpenAI, and Computer Vision.\"}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:43:37.011321",
+        "success": true
+      }
+    ],
+    "my project": [
+      {
+        "query": "from pdf explain my project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 7.85,
+          "content": "{'content': \"I apologize, but I do not have access to the PDF document you are referring to in this current interaction. My memory of previous attachments doesn't persist across turns.\\n\\nTo explain your projects, please upload or paste the relevant section of your PDF document here.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:38:56.972424",
+        "success": true
+      }
+    ],
+    "explain my": [
+      {
+        "query": "from pdf explain my project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 7.85,
+          "content": "{'content': \"I apologize, but I do not have access to the PDF document you are referring to in this current interaction. My memory of previous attachments doesn't persist across turns.\\n\\nTo explain your projects, please upload or paste the relevant section of your PDF document here.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:38:56.988951",
+        "success": true
+      },
+      {
+        "query": "from pdf explain my projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 2.368,
+          "content": "{'content': \"I apologize, but I still do not have access to the PDF document. Each interaction is separate, and I don't retain memory of attachments from previous turns.\\n\\nTo explain your projects, **please upload or paste the relevant project descriptions from your PDF here.** Once you provide the text, I'll be happy to explain them.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:40:21.656713",
+        "success": true
+      }
+    ],
+    "project **recent": [
+      {
+        "query": "from pdf explain my project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 7.85,
+          "content": "{'content': \"I apologize, but I do not have access to the PDF document you are referring to in this current interaction. My memory of previous attachments doesn't persist across turns.\\n\\nTo explain your projects, please upload or paste the relevant section of your PDF document here.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:38:56.989453",
+        "success": true
+      },
+      {
+        "query": "give me my all project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 2.803,
+          "content": "{'content': 'Here are all your projects:\\n\\n*   Multi AI Agent System\\n*   AI-Based Diet Recommendation & Calorie Estimation System\\n*   AI-Driven Legal News Extraction & Summarization System\\n*   Microfinance Loan Default Prediction\\n*   Breast Cancer Detection'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T22:58:45.870725",
+        "success": true
+      }
+    ],
+    "projects **recent": [
+      {
+        "query": "from pdf explain my projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 2.368,
+          "content": "{'content': \"I apologize, but I still do not have access to the PDF document. Each interaction is separate, and I don't retain memory of attachments from previous turns.\\n\\nTo explain your projects, **please upload or paste the relevant project descriptions from your PDF here.** Once you provide the text, I'll be happy to explain them.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:40:21.661721",
+        "success": true
+      },
+      {
+        "query": "from pdf give me the projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.043,
+          "content": "{'content': 'Here are the projects mentioned in the document:\\n\\n*   **Multi AI Agent System**\\n    *   **Description:** \"Designed and developed a multi-agent AI system capable of handling voice commands, research, automated system operations, and intelligent decision-making.\"\\n    *   **Technologies:** Python, NLP, Deep Learning, Automation, Web Scraping, System Control\\n    *   **Status:** Ongoing\\n*   **AI-Driven Legal News Extraction & Summarization System**\\n    *   **Description:** \"Extracted and summarized daily Top 10 legal news, court updates, and notices from sajjadhusainlawassociates.com using automated NLP processing.\"\\n    *   **Technologies:** Python, NLP'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:41:19.838680",
+        "success": true
+      }
+    ],
+    "my projects": [
+      {
+        "query": "from pdf explain my projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 2.368,
+          "content": "{'content': \"I apologize, but I still do not have access to the PDF document. Each interaction is separate, and I don't retain memory of attachments from previous turns.\\n\\nTo explain your projects, **please upload or paste the relevant project descriptions from your PDF here.** Once you provide the text, I'll be happy to explain them.\"}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:40:21.664727",
+        "success": true
+      }
+    ],
+    "the projects": [
+      {
+        "query": "from pdf give me the projects\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 3.043,
+          "content": "{'content': 'Here are the projects mentioned in the document:\\n\\n*   **Multi AI Agent System**\\n    *   **Description:** \"Designed and developed a multi-agent AI system capable of handling voice commands, research, automated system operations, and intelligent decision-making.\"\\n    *   **Technologies:** Python, NLP, Deep Learning, Automation, Web Scraping, System Control\\n    *   **Status:** Ongoing\\n*   **AI-Driven Legal News Extraction & Summarization System**\\n    *   **Description:** \"Extracted and summarized daily Top 10 legal news, court updates, and notices from sajjadhusainlawassociates.com using automated NLP processing.\"\\n    *   **Technologies:** Python, NLP'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:41:19.827661",
+        "success": true
+      }
+    ],
+    "pdf what": [
+      {
+        "query": "from pdf what is resume name \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 1.978,
+          "content": "{'content': 'Based on the information provided in our conversation, the resume name is **not mentioned**.\\n\\nThe previous information only contained details about two projects: \"Multi AI Agent System\" and \"AI-Driven Legal News Extraction & Summarization System.\"'}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:42:28.446890",
+        "success": true
+      }
+    ],
+    "name **recent": [
+      {
+        "query": "from pdf what is resume name \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 1.978,
+          "content": "{'content': 'Based on the information provided in our conversation, the resume name is **not mentioned**.\\n\\nThe previous information only contained details about two projects: \"Multi AI Agent System\" and \"AI-Driven Legal News Extraction & Summarization System.\"'}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:42:28.450398",
+        "success": true
+      }
+    ],
+    "resume name": [
+      {
+        "query": "from pdf what is resume name \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 1.978,
+          "content": "{'content': 'Based on the information provided in our conversation, the resume name is **not mentioned**.\\n\\nThe previous information only contained details about two projects: \"Multi AI Agent System\" and \"AI-Driven Legal News Extraction & Summarization System.\"'}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:42:28.461413",
+        "success": true
+      }
+    ],
+    "is resume": [
+      {
+        "query": "from pdf what is resume name \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "knowledge",
+          "response_time": 1.978,
+          "content": "{'content': 'Based on the information provided in our conversation, the resume name is **not mentioned**.\\n\\nThe previous information only contained details about two projects: \"Multi AI Agent System\" and \"AI-Driven Legal News Extraction & Summarization System.\"'}",
+          "error": null
+        },
+        "agent": "knowledge",
+        "timestamp": "2026-04-01T22:42:28.463920",
+        "success": true
+      }
+    ],
+    "summary **recent": [
+      {
+        "query": "from pdf give me the summary \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 7.665,
+          "content": "{'content': \"Aditya Verma is an aspiring Data Scientist with expertise in Data Science, Machine Learning, and Deep Learning, skilled in technologies such as Random Forest, Gradient Boosting, CNNs, Python, TensorFlow, Keras, scikit-learn, and NLP.\\n\\nHe holds a B.Tech in Computer Science (Information Technology) from Dr. A.P.J. Abdul Kalam Technical University (2022-2026). His technical skills span programming languages (Python, MySQL, C), numerous libraries and frameworks (NumPy, Pandas, scikit-learn, TensorFlow, Keras, OpenCV, NLTK, Flask), technologies like Machine Learning, Deep Learning, NLP, Streamlit, FastAPI, REST APIs, and AWS, alongside various ML/DL techniques and tools like Power BI, Jupyter Notebook, and Git/GitHub.\\n\\nAditya's experience includes:\\n*   **Artificial Intelligence and Machine Learning at Eyerexus Private Limited (June 2026 \u2013 Present):** Working on AI projects, building intelligent systems, deploying machine learning models, and utilizing Python and AI frameworks.\\n*   **Data Science Intern at Difmo Private Limited (June 2025 \u2013 November 2025):** Conducted data cleaning, preprocessing, exploratory analysis, engineered machine learning models, and automated data workflows, achieving a 25% efficiency improvement.\\n\\nKey projects highlight his practical application of skills:\\n*   **Multi AI Agent System (Ongoing):** Designed and developed a multi-agent AI system for voice commands, research, automated operations, and intelligent decision-making, integrating features like browser control, file management, and web scraping using Python, NLP, and Deep Learning.\\n*   **AI-Based Diet Recommendation & Calorie Estimation System:** Currently building an AI-driven system for personalized nutrition and calorie analysis for children and adults, leveraging Python, ML, OpenAI, and Computer Vision.\"}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-01T22:43:37.005309",
+        "success": true
+      }
+    ],
+    "my all": [
+      {
+        "query": "give me my all project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 2.803,
+          "content": "{'content': 'Here are all your projects:\\n\\n*   Multi AI Agent System\\n*   AI-Based Diet Recommendation & Calorie Estimation System\\n*   AI-Driven Legal News Extraction & Summarization System\\n*   Microfinance Loan Default Prediction\\n*   Breast Cancer Detection'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T22:58:45.869722",
+        "success": true
+      }
+    ],
+    "all project": [
+      {
+        "query": "give me my all project \n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 2.803,
+          "content": "{'content': 'Here are all your projects:\\n\\n*   Multi AI Agent System\\n*   AI-Based Diet Recommendation & Calorie Estimation System\\n*   AI-Driven Legal News Extraction & Summarization System\\n*   Microfinance Loan Default Prediction\\n*   Breast Cancer Detection'}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T22:58:45.879235",
+        "success": true
+      }
+    ],
+    "formula **recent": [
+      {
+        "query": "give me the normal distribution formula\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.85,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 48.161352321s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '48s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:02:12.859612",
+        "success": true
+      }
+    ],
+    "the normal": [
+      {
+        "query": "give me the normal distribution formula\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.85,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 48.161352321s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '48s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:02:12.865123",
+        "success": true
+      }
+    ],
+    "resume **recent": [
+      {
+        "query": "give me the project details of my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.807,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 15.837189881s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:04:45.212477",
+        "success": true
+      },
+      {
+        "query": "from pdf give me all technical skill in my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 179.439,
+          "content": "{'content': 'The document does not contain this information. The provided text is about \"Normal distribution\" and does not describe any technical skills on a resume.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-02T05:35:23.556049",
+        "success": true
+      }
+    ],
+    "details of": [
+      {
+        "query": "give me the project details of my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.807,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 15.837189881s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:04:45.228503",
+        "success": true
+      }
+    ],
+    "project details": [
+      {
+        "query": "give me the project details of my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.807,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 15.837189881s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:04:45.230506",
+        "success": true
+      }
+    ],
+    "of my": [
+      {
+        "query": "give me the project details of my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "general",
+          "response_time": 0.807,
+          "content": "{'content': \"\u26a0 Gemini error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\\\nPlease retry in 15.837189881s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}\"}",
+          "error": null
+        },
+        "agent": "general",
+        "timestamp": "2026-04-01T23:04:45.231509",
+        "success": true
+      }
+    ],
+    "me all": [
+      {
+        "query": "from pdf give me all technical skill in my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 179.439,
+          "content": "{'content': 'The document does not contain this information. The provided text is about \"Normal distribution\" and does not describe any technical skills on a resume.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-02T05:35:23.545047",
+        "success": true
+      }
+    ],
+    "in my": [
+      {
+        "query": "from pdf give me all technical skill in my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 179.439,
+          "content": "{'content': 'The document does not contain this information. The provided text is about \"Normal distribution\" and does not describe any technical skills on a resume.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-02T05:35:23.547050",
+        "success": true
+      }
+    ],
+    "from pdf": [
+      {
+        "query": "from pdf give me all technical skill in my resume\n\n\n\n**Recent conversations:**\n",
+        "response": {
+          "success": true,
+          "agent_used": "document",
+          "response_time": 179.439,
+          "content": "{'content': 'The document does not contain this information. The provided text is about \"Normal distribution\" and does not describe any technical skills on a resume.'}",
+          "error": null
+        },
+        "agent": "document",
+        "timestamp": "2026-04-02T05:35:23.549045",
+        "success": true
+      }
+    ]
+  },
+  "mistakes": {},
+  "solutions": {},
+  "improvements": [
+    {
+      "type": "success_pattern",
+      "query_pattern": "yes **recent",
+      "agent": "general",
+      "response_time": 15.057,
+      "timestamp": "2026-03-31T10:23:44.775327",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "only general",
+      "agent": "general",
+      "response_time": 10.898,
+      "timestamp": "2026-03-31T10:23:44.775327",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "my technical",
+      "agent": "document",
+      "response_time": 3.363,
+      "timestamp": "2026-04-01T22:36:48.198070",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "my technical",
+      "agent": "document",
+      "response_time": 3.363,
+      "timestamp": "2026-04-01T22:43:37.089450",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "my project",
+      "agent": "knowledge",
+      "response_time": 7.85,
+      "timestamp": "2026-04-01T22:43:37.089450",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "intent:document",
+      "agent": "knowledge",
+      "response_time": 2.368,
+      "timestamp": "2026-04-01T22:43:37.089450",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "intent:document",
+      "agent": "document",
+      "response_time": 3.043,
+      "timestamp": "2026-04-01T22:43:37.089450",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "pdf what",
+      "agent": "knowledge",
+      "response_time": 1.978,
+      "timestamp": "2026-04-01T22:43:37.089450",
+      "internal": true
+    },
+    {
+      "type": "success_pattern",
+      "query_pattern": "intent:document",
+      "agent": "document",
+      "response_time": 7.665,
+      "timestamp": "2026-04-01T22:43:37.089450",
+      "internal": true
+    }
+  ],
+  "statistics": {
+    "total_interactions": 19,
+    "successful_responses": 19,
+    "failed_responses": 0,
+    "learning_cycles": 3
+  }
+}

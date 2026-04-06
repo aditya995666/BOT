@@ -1,0 +1,87 @@
+# Python ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+build/
+dist/
+
+# Environment
+.env
+venv/
+.venv/
+env/
+
+
+# .gitignore mein ye line add karo (top pe)
+echo "" >> .gitignore
+echo "# Already tracked files to ignore (cleanup)" >> .gitignore
+echo "!.gitignore" >> .gitignore
+
+# Large files / media
+generated_images/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp3
+*.wav
+*.mp4
+*.avi
+*.zip
+*.tar.gz
+
+# Database
+memory.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Temp / OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+*.swp
+*.orig
+~*
+
+# Editors
+.vscode/
+.idea/
+
+# Streamlit / app temp
+*.streamlit
+
+# Voice files
+voice_*.mp3
+voice_fallback_*.mp3
+
+# Generated PDFs
+edited_document.pdf
+*.pdf  # अगर generated PDFs ignore करनी हैं
+
+# Other large
+*.xlsx
+*.csv  # अगर large data files हैं तो
+
+# Ignore everything else except code
+*
+!*.py
+!*.html
+!*.txt
+!requirements.txt
+!Dockerfile
+!README.md
+!agents/
+!brain/
+!memory/
+!utils/
+!tools/
+!app.py

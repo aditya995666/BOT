@@ -1,0 +1,602 @@
+{
+  "memories": [
+    {
+      "id": 1,
+      "timestamp": "2026-03-31T00:03:40.293993",
+      "query": "click on disable Jarvis button",
+      "response": {
+        "success": true,
+        "agent_used": "autoclicker",
+        "response_time": 20.612
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 2,
+      "timestamp": "2026-03-31T00:03:40.304011",
+      "query": "click on disable Jarvis button",
+      "response": {
+        "success": true,
+        "agent_used": "autoclicker",
+        "response_time": 20.612
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 3,
+      "timestamp": "2026-03-31T00:08:03.090431",
+      "query": "click on the disable Jarvis button in the streamlet app\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "autoclicker",
+        "response_time": 3.093
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 4,
+      "timestamp": "2026-03-31T00:08:03.119479",
+      "query": "click on the disable Jarvis button in the streamlet app\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "autoclicker",
+        "response_time": 3.093
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 5,
+      "timestamp": "2026-03-31T09:43:36.084526",
+      "query": "case sensitive\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 23.954
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 6,
+      "timestamp": "2026-03-31T09:43:36.097848",
+      "query": "case sensitive\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 23.954
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 7,
+      "timestamp": "2026-03-31T10:10:00.976145",
+      "query": "yes \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 15.057
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 8,
+      "timestamp": "2026-03-31T10:10:01.003691",
+      "query": "yes \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 15.057
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 9,
+      "timestamp": "2026-03-31T10:23:44.693581",
+      "query": "only general\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 10.898
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 10,
+      "timestamp": "2026-03-31T10:23:44.711723",
+      "query": "only general\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 10.898
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 11,
+      "timestamp": "2026-03-31T10:28:30.848549",
+      "query": "from pdf give me the  all technical skill\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 5.661
+      },
+      "user_id": "default",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 12,
+      "timestamp": "2026-03-31T10:28:30.864174",
+      "query": "from pdf give me the  all technical skill\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 5.661
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 13,
+      "timestamp": "2026-03-31T10:33:32.116558",
+      "query": "nya nmeam ei si sa daid\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 2.794
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 14,
+      "timestamp": "2026-03-31T10:33:32.138474",
+      "query": "nya nmeam ei si sa daid\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 2.794
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 15,
+      "timestamp": "2026-04-01T21:08:08.886315",
+      "query": "handling space\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 96.145
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 16,
+      "timestamp": "2026-04-01T21:08:08.915542",
+      "query": "handling space\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 96.145
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 17,
+      "timestamp": "2026-04-01T21:10:42.694173",
+      "query": "hello bro \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 86.881
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 18,
+      "timestamp": "2026-04-01T21:10:42.694173",
+      "query": "hello bro \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 86.881
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 19,
+      "timestamp": "2026-04-01T22:36:48.054830",
+      "query": "from pdf give me my technical skill\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 3.363
+      },
+      "user_id": "default",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 20,
+      "timestamp": "2026-04-01T22:36:48.072363",
+      "query": "from pdf give me my technical skill\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 3.363
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 21,
+      "timestamp": "2026-04-01T22:38:56.923843",
+      "query": "from pdf explain my project \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 7.85
+      },
+      "user_id": "default",
+      "tags": [
+        "document",
+        "knowledge"
+      ]
+    },
+    {
+      "id": 22,
+      "timestamp": "2026-04-01T22:38:56.944378",
+      "query": "from pdf explain my project \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 7.85
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document",
+        "knowledge"
+      ]
+    },
+    {
+      "id": 23,
+      "timestamp": "2026-04-01T22:40:21.590604",
+      "query": "from pdf explain my projects\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 2.368
+      },
+      "user_id": "default",
+      "tags": [
+        "document",
+        "knowledge"
+      ]
+    },
+    {
+      "id": 24,
+      "timestamp": "2026-04-01T22:40:21.617650",
+      "query": "from pdf explain my projects\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 2.368
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document",
+        "knowledge"
+      ]
+    },
+    {
+      "id": 25,
+      "timestamp": "2026-04-01T22:41:19.736511",
+      "query": "from pdf give me the projects\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 3.043
+      },
+      "user_id": "default",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 26,
+      "timestamp": "2026-04-01T22:41:19.768064",
+      "query": "from pdf give me the projects\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 3.043
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 27,
+      "timestamp": "2026-04-01T22:42:28.385789",
+      "query": "from pdf what is resume name \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 1.978
+      },
+      "user_id": "default",
+      "tags": [
+        "document",
+        "knowledge"
+      ]
+    },
+    {
+      "id": 28,
+      "timestamp": "2026-04-01T22:42:28.413836",
+      "query": "from pdf what is resume name \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 1.978
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document",
+        "knowledge"
+      ]
+    },
+    {
+      "id": 29,
+      "timestamp": "2026-04-01T22:43:36.928183",
+      "query": "from pdf give me the summary \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 7.665
+      },
+      "user_id": "default",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 30,
+      "timestamp": "2026-04-01T22:43:36.964245",
+      "query": "from pdf give me the summary \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 7.665
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 31,
+      "timestamp": "2026-04-01T22:50:36.499375",
+      "query": "what is machine learning\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 16.814
+      },
+      "user_id": "default",
+      "tags": [
+        "knowledge"
+      ]
+    },
+    {
+      "id": 32,
+      "timestamp": "2026-04-01T22:50:36.526922",
+      "query": "what is machine learning\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge",
+        "response_time": 16.814
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "knowledge"
+      ]
+    },
+    {
+      "id": 33,
+      "timestamp": "2026-04-01T22:52:27.891080",
+      "query": "Google Search website\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "autoclicker",
+        "response_time": 4.726
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 34,
+      "timestamp": "2026-04-01T22:52:27.924134",
+      "query": "Google Search website\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "autoclicker",
+        "response_time": 4.726
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 35,
+      "timestamp": "2026-04-01T22:56:34.489647",
+      "query": "yes I discussed machine learning\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 6.936
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 36,
+      "timestamp": "2026-04-01T22:56:34.524203",
+      "query": "yes I discussed machine learning\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 6.936
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 37,
+      "timestamp": "2026-04-01T22:58:17.058349",
+      "query": "\ud83d\udcda Knowledge Pasted",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge_store",
+        "response_time": 0
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 38,
+      "timestamp": "2026-04-01T22:58:45.785585",
+      "query": "give me my all project \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 2.803
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 39,
+      "timestamp": "2026-04-01T22:58:45.814130",
+      "query": "give me my all project \n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 2.803
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 40,
+      "timestamp": "2026-04-01T23:01:45.605240",
+      "query": "\ud83d\udcda Knowledge Pasted",
+      "response": {
+        "success": true,
+        "agent_used": "knowledge_store",
+        "response_time": 0
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 41,
+      "timestamp": "2026-04-01T23:02:12.771471",
+      "query": "give me the normal distribution formula\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 0.85
+      },
+      "user_id": "default",
+      "tags": [
+        "math"
+      ]
+    },
+    {
+      "id": 42,
+      "timestamp": "2026-04-01T23:02:12.795007",
+      "query": "give me the normal distribution formula\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 0.85
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "math"
+      ]
+    },
+    {
+      "id": 43,
+      "timestamp": "2026-04-01T23:04:45.112819",
+      "query": "give me the project details of my resume\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 0.807
+      },
+      "user_id": "default",
+      "tags": []
+    },
+    {
+      "id": 44,
+      "timestamp": "2026-04-01T23:04:45.147372",
+      "query": "give me the project details of my resume\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "general",
+        "response_time": 0.807
+      },
+      "user_id": "anonymous",
+      "tags": []
+    },
+    {
+      "id": 45,
+      "timestamp": "2026-04-02T05:35:23.483360",
+      "query": "from pdf give me all technical skill in my resume\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 179.439
+      },
+      "user_id": "default",
+      "tags": [
+        "document"
+      ]
+    },
+    {
+      "id": 46,
+      "timestamp": "2026-04-02T05:35:23.507012",
+      "query": "from pdf give me all technical skill in my resume\n\n\n\n**Recent conversations:**\n",
+      "response": {
+        "success": true,
+        "agent_used": "document",
+        "response_time": 179.439
+      },
+      "user_id": "anonymous",
+      "tags": [
+        "document"
+      ]
+    }
+  ]
+}
