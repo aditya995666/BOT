@@ -4,107 +4,112 @@ import re
 import tempfile
 import threading
 import queue
+import time
 from git import Repo
 from pypdf import PdfReader
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 from youtube_transcript_api import YouTubeTranscriptApi
-from memory.global_memory import global_memory as memory
 from datetime import datetime
 
 MAX_PAGES = 15
 
-# 🔥 AUTO-URL PROCESSOR (Background scraping)
+
 class URLProcessor:
-    """Background URL processor - automatically scrapes URLs when detected"""
-    
     def __init__(self):
         self.url_queue = queue.Queue()
         self.processed_urls = set()
         self.processing = True
         self.worker_thread = None
         self.start_worker()
-    
+
     def start_worker(self):
-        """Start background worker thread"""
         self.worker_thread = threading.Thread(target=self._process_loop, daemon=True)
         self.worker_thread.start()
-        print("🔄 Auto-URL Processor started - Will auto-scrape any URL you share")
-    
+        print("🔄 Auto-URL Processor started")
+
     def add_url(self, url, user_query=""):
-        """Add URL to processing queue"""
-        if url in self.processed_urls:
-            return False
-        
-        # Clean URL
         url = url.strip()
         if not url.startswith(('http://', 'https://')):
             url = 'https://' + url
-        
+        if url in self.processed_urls:
+            print(f"⏭️ URL already processed: {url}")
+            return False
         self.url_queue.put({
             'url': url,
             'query': user_query,
             'timestamp': datetime.now()
         })
+        print(f"📥 URL added to queue: {url}")
         return True
-    
+
     def _process_loop(self):
-        """Background worker that processes URLs"""
+        print("🔄 URL Processor worker thread started")
         while self.processing:
             try:
                 item = self.url_queue.get(timeout=2)
                 url = item['url']
-                
-                print(f"🔄 Auto-scraping in background: {url}")
+                print(f"\n{'='*50}\n🔄 [BACKGROUND] Processing: {url}\n{'='*50}")
+                start_time = time.time()
                 result = train_website_background(url)
-                
+                elapsed = time.time() - start_time
                 if result.get('success'):
                     self.processed_urls.add(url)
-                    print(f"✅ Auto-scraped & stored: {url}")
+                    print(f"✅ [BACKGROUND] Done {url} in {elapsed:.2f}s — {result.get('chunks', 0)} chunks")
                 else:
-                    print(f"❌ Auto-scrape failed: {url}")
-                
+                    print(f"❌ [BACKGROUND] Failed {url}: {result.get('content', 'Unknown')}")
                 self.url_queue.task_done()
-                
             except queue.Empty:
                 continue
             except Exception as e:
-                print(f"URL Processor error: {e}")
-    
+                print(f"❌ URL Processor error: {e}")
+
     def is_processed(self, url):
-        """Check if URL already processed"""
-        return url in self.processed_urls
-    
+    # www.difmo.com aur difmo.com ko same maano
+        def normalize(u):
+            return urlparse(u).netloc.replace("www.", "").rstrip("/")
+        
+        input_domain = normalize(url)
+        for processed_url in self.processed_urls:
+            if normalize(processed_url) == input_domain:
+                return True
+        return False
     def get_status(self):
-        """Get processor status"""
         return {
             "processed_count": len(self.processed_urls),
             "queue_size": self.url_queue.qsize()
         }
 
-# Global processor instance
 url_processor = URLProcessor()
 
-# 🌐 WEBSITE LEARNING
-
+_last_processed_url = None
+_active_url = None
+# ─────────────────────────────────────────────
+# 🌐 WEB AGENT
+# ─────────────────────────────────────────────
 class WebAgent:
     def __init__(self):
         self.visited = set()
+        print("✅ WebAgent initialized")
 
     def fetch_page(self, url):
+        print(f"   🌐 Fetching: {url[:80]}...")
         try:
             headers = {"User-Agent": "Mozilla/5.0"}
             r = requests.get(url, headers=headers, timeout=15)
+            print(f"      ✅ Status: {r.status_code}")
             return r.text
         except Exception as e:
-            print(f"[WebAgent] Failed to fetch {url}: {e}")
+            print(f"      ❌ Failed: {e}")
             return ""
 
     def extract_text(self, html):
         soup = BeautifulSoup(html, "html.parser")
-        for tag in soup(["script","style","nav","footer","header"]):
+        for tag in soup(["script", "style", "nav", "footer", "header"]):
             tag.decompose()
-        return " ".join(soup.get_text(separator=" ").split())
+        text = " ".join(soup.get_text(separator=" ").split())
+        print(f"      ✅ Extracted {len(text)} chars")
+        return text
 
     def get_links(self, html, base_url):
         soup = BeautifulSoup(html, "html.parser")
@@ -117,14 +122,19 @@ class WebAgent:
         return links
 
     def crawl(self, start_url):
+        print(f"\n{'='*50}\n🕷️ CRAWLING: {start_url}\n{'='*50}")
+        start_time = time.time()
         self.visited = set()
         to_visit = [start_url]
         collected_text = ""
+        pages_crawled = 0
 
         while to_visit and len(self.visited) < MAX_PAGES:
             url = to_visit.pop(0)
             if url in self.visited:
                 continue
+            pages_crawled += 1
+            print(f"\n📄 [{pages_crawled}/{MAX_PAGES}] {url[:80]}...")
             self.visited.add(url)
             html = self.fetch_page(url)
             if not html:
@@ -133,301 +143,360 @@ class WebAgent:
             collected_text += "\n\n" + text[:3000]
             to_visit.extend(list(self.get_links(html, url)))
 
+        elapsed = time.time() - start_time
+        print(f"✅ Crawl complete: {pages_crawled} pages, {len(collected_text)} chars in {elapsed:.2f}s")
         return collected_text
 
 web_agent = WebAgent()
 
-# 🔥 Background training 
+
+# ─────────────────────────────────────────────
+# 📦 FAISS STORAGE
+# ─────────────────────────────────────────────
+def store_website_in_faiss(url: str, content: str):
+    try:
+        from memory.vector_store import add_memory
+        import hashlib
+
+        words = content.split()
+        chunks = [" ".join(words[i:i+300]) for i in range(0, len(words), 200)]
+        print(f"📦 Storing {len(chunks)} chunks in FAISS...")
+
+        stored = 0
+        for i, chunk in enumerate(chunks):
+            clean_chunk = chunk.strip()
+            chunk_hash = hashlib.md5(f"{url}_{i}_{chunk[:100]}".encode()).hexdigest()
+            memory_id = int(chunk_hash[:8], 16) % 1000000
+            add_memory(
+                text=clean_chunk,
+                memory_id=memory_id,
+                metadata={
+                    "source": "web",
+                    "url": url,
+                    "chunk_index": i,
+                    "type": "website_content",
+                    "timestamp": datetime.now().isoformat()
+                }
+            )
+            stored += 1
+            if (i + 1) % 20 == 0:
+                print(f"   Stored {stored}/{len(chunks)} chunks in FAISS...")
+
+        print(f"✅ FAISS: Stored {stored} chunks for {url}")
+        return stored
+    except Exception as e:
+        print(f"❌ FAISS store error: {e}")
+        return 0
+
+
+# ─────────────────────────────────────────────
+# 🔧 BACKGROUND TRAINING
+# ─────────────────────────────────────────────
 def train_website_background(url):
-    """Background training - stores in FAISS and SQLite"""
+    print(f"\n🔧 [BACKGROUND] Training on: {url}")
     try:
         website_text = web_agent.crawl(url)
-        
         if not website_text or len(website_text.strip()) < 100:
             return {"success": False, "content": "Insufficient content"}
-        
-        words = website_text.split()
-        chunks = [" ".join(words[i:i+500]) for i in range(0, len(words), 500)]
-        
-        stored_count = 0
-        for chunk in chunks:
-            enriched_chunk = f"""
-Website: {url}
-Content: {chunk}
-"""
-            try:
-                memory.store(
-                    question=f"website_{url[:50]}",
-                    answer=enriched_chunk,
-                    source_agent="web_knowledge",
-                    confidence=0.95,
-                    content_type="website"
-                )
-                stored_count += 1
-            except Exception as e:
-                print(f"Store error in background: {e}")
-        
-        # 🔥 Auto-generate summary after learning
-        if stored_count > 0:
-            print(f"📝 Auto-summary ready for {url}")
-        
-        return {"success": True, "content": f"Stored {stored_count} chunks", "chunks": stored_count}
+
+        faiss_stored = store_website_in_faiss(url, website_text)
+        print(f"✅ [BACKGROUND] FAISS: {faiss_stored} chunks stored for {url}")
+        return {"success": True, "content": f"Stored {faiss_stored} chunks", "chunks": faiss_stored}
     except Exception as e:
+        print(f"❌ [BACKGROUND] Error: {e}")
         return {"success": False, "content": str(e)}
 
-# 🌐 TRAIN WEBSITE (Public - with output)
+# ========== PUBLIC API FOR ROUTER ==========
 def train_website(url):
-    print(f"[WebAgent] Training on website: {url}")
-    website_text = web_agent.crawl(url)
-
-    if not website_text or len(website_text.strip()) < 100:
-        return {"success": False, "content": "Could not read website or insufficient content"}
-
-    words = website_text.split()
-    chunks = [" ".join(words[i:i+500]) for i in range(0, len(words), 500)]
-    
-    stored_count = 0
-    for chunk in chunks:
-        enriched_chunk = f"""
-Website: {url}
-Content: {chunk}
-"""
-        try:
-            memory.store(
-                question=f"website_{url[:50]}",
-                answer=enriched_chunk,
-                source_agent="web_knowledge",
-                confidence=0.95,
-                content_type="website"
-            )
-            stored_count += 1
-        except Exception as e:
-            print(f"Store error: {e}")
-
-    return {"success": True, "content": f"✅ Website learned. {stored_count} chunks stored from {url}"}
-
-# 🔥 Auto-detect and process URL from text
+    """Train website - Main entry point for router"""
+    return train_website_background(url)
+# ─────────────────────────────────────────────
+# 🌐 URL DETECTION HELPER
+# ─────────────────────────────────────────────
 def process_url_if_present(text):
-    """Extract URL from text and trigger background processing"""
+    global _last_processed_url, _active_url  # 🔥 _active_url add karo
     url_pattern = r'https?://[^\s]+|www\.[^\s]+'
     urls = re.findall(url_pattern, text)
-    
     if urls:
         for url in urls:
+            print(f"🔍 Auto-detected URL: {url}")
             url_processor.add_url(url, text)
+        _last_processed_url = urls[0]
+        _active_url = urls[0]  # 🔥 Yeh add karo
+        print(f"🎯 Active URL set: {_active_url}")
         return True, urls[0]
     return False, None
+def get_active_url():
+    return _active_url  # 🔥 Router yeh use karega
 
 def is_url_processed(url):
-    """Check if URL has been processed"""
     return url_processor.is_processed(url)
 
 def get_auto_processor_status():
-    """Get status of auto processor"""
     return url_processor.get_status()
 
-# 🔥 GET SUMMARY FROM LEARNED DATA
-def get_website_summary(url):
-    """Get summary of a learned website"""
-    question = f"What is {url} about? Give me a summary of the company and their services."
-    return ask_knowledge(question)
 
-# 🔎 ASK FROM LEARNED DATA - COMPLETE FIX
+# ─────────────────────────────────────────────
+# 🔎 ASK FROM LEARNED DATA  ← MAIN FIX HERE
+# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────
+# 🔎 ASK FROM LEARNED DATA WITH AI SUMMARIZATION
+# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────
+# 🔎 ASK FROM LEARNED DATA WITH AI SUMMARIZATION
+# ─────────────────────────────────────────────
 def ask_knowledge(question):
-    print(f"[WebAgent] Asking: {question}")
-    
+    global _last_processed_url, _active_url
+    start_time = time.time()
+
+    target_url = _active_url
+    if not target_url:
+        return "⚠️ Pehle koi URL share karo!"
+
+    print(f"🔗 Active URL: {target_url}")
+
+    if not url_processor.is_processed(target_url):
+        return f"⏳ Abhi **{target_url}** seekh raha hoon... 15-20 second baad poocho!"
+
     try:
-        # 🔥 FIX 1: Try semantic_fetch first (FAISS)
-        if hasattr(memory, 'semantic_fetch'):
-            results = memory.semantic_fetch(question, top_k=5)
-            if results:
-                return _format_results(results)
+        from memory.vector_store import search_similar
+        from brain.gemini_llm import GeminiBrain
         
-        # 🔥 FIX 2: Try query_knowledge
-        if hasattr(memory, 'query_knowledge'):
-            results = memory.query_knowledge(question, top_k=5)
-            if results:
-                return _format_results(results)
+        brain = GeminiBrain()
         
-        # 🔥 FIX 3: Try search_memory
-        if hasattr(memory, 'search_memory'):
-            results = memory.search_memory(question, limit=5)
-            if results:
-                return _format_results(results)
+        # 🔥 FIX: Remove source_filter to get ALL results
+        faiss_results = search_similar(question, top_k=10)  # ← No source_filter
         
-        # 🔥 FIX 4: Direct database query with correct schema
-        try:
-            import sqlite3
-            from pathlib import Path
+        if faiss_results:
+            # Try to find chunks related to active URL
+            target_domain = urlparse(target_url).netloc.replace("www.", "")
             
-            db_path = Path(__file__).parent.parent / "memory" / "memory.db"
-            if db_path.exists():
-                conn = sqlite3.connect(str(db_path))
-                cursor = conn.cursor()
+            # First try: URL-specific chunks
+            url_results = [
+                r for r in faiss_results
+                if target_domain in str(r.get("metadata", {}).get("url", ""))
+            ]
+            
+            # Second try: Any chunks that are not garbage
+            if not url_results:
+                url_results = [
+                    r for r in faiss_results
+                    if r.get("text") and len(r.get("text", "")) > 100
+                    and not any(g in r.get("text", "") for g in ["Please install", "still learning", "abhi load"])
+                ]
+            
+            print(f"✅ Found {len(url_results)} usable chunks")
+            
+            if url_results:
+                # Extract text from chunks
+                texts = []
+                for r in url_results[:5]:
+                    raw = r.get("text", "") or r.get("content", "")
+                    if raw and len(raw) > 100:
+                        cleaned = _clean_content(raw)
+                        if cleaned and len(cleaned) > 50:
+                            texts.append(cleaned)
                 
-                # 🔥 Check if 'question' column exists, if not use 'query'
-                cursor.execute("PRAGMA table_info(memory)")
-                columns = [c[1] for c in cursor.fetchall()]
-                
-                question_col = "question" if "question" in columns else "query" if "query" in columns else "id"
-                answer_col = "answer" if "answer" in columns else "response" if "response" in columns else "content"
-                
-                keywords = question.lower().split()[:5]
-                keyword_conditions = " OR ".join([f"{question_col} LIKE '%{kw}%' OR {answer_col} LIKE '%{kw}%'" for kw in keywords])
-                
-                cursor.execute(f"""
-                    SELECT {question_col}, {answer_col} FROM memory 
-                    WHERE source_agent IN ('web_knowledge', 'youtube_knowledge', 'github_knowledge', 'pdf_knowledge')
-                    AND ({keyword_conditions})
-                    LIMIT 5
-                """)
-                
-                rows = cursor.fetchall()
-                conn.close()
-                
-                if rows:
-                    results = [{"question": r[0], "answer": r[1]} for r in rows]
-                    return _format_results(results)
-        except Exception as e:
-            print(f"Direct DB query error: {e}")
-        
-        return "❌ No relevant knowledge found. Share a URL first - I'll learn about it automatically!"
+                if texts:
+                    combined_text = "\n\n".join(texts)
+                    
+                    # Use AI to answer
+                    prompt = f"""Based ONLY on the following website content, answer the user's question.
 
+USER QUESTION: {question}
+
+WEBSITE CONTENT:
+{combined_text[:3000]}
+
+INSTRUCTIONS:
+1. Answer based ONLY on the content above
+2. If specific dates/numbers are mentioned, use them
+3. If information not found, say "Information not available"
+4. Keep answer concise (7,8 sentences)
+
+ANSWER:"""
+                    
+                    answer = brain.think(prompt)
+                    return f"📚 **Answer:**\n\n{answer}"
+        
+        return f"⚠️ No information found for: {question}"
+        
     except Exception as e:
-        print(f"Ask knowledge error: {e}")
-        return f"❌ Knowledge retrieval failed: {str(e)}"
+        print(f"⚠️ ask_knowledge error: {e}")
+        return f"❌ Error: {str(e)}"
+def _extract_texts(results):
+    """Helper: extract and clean text from FAISS results"""
+    texts = []
+    for r in results:
+        raw = r.get("text", "") or r.get("content", "")
+        if raw:
+            cleaned = _clean_content(raw)
+            if cleaned and len(cleaned) > 30:
+                texts.append(cleaned)
+    return texts
 
-def _format_results(results):
-    """Format results into readable answer"""
-    if not results:
-        return "No relevant knowledge found."
-    
-    if isinstance(results, str):
-        return results
-    
-    if isinstance(results, list):
-        texts = []
-        for i, r in enumerate(results[:3], 1):
-            if isinstance(r, dict):
-                answer = r.get("answer", "")
-                if answer:
-                    # Clean up the answer
-                    answer = re.sub(r'^Website:.*?\nContent:\s*', '', answer, flags=re.DOTALL)
-                    answer = answer.strip()
-                    if len(answer) > 1500:
-                        answer = answer[:1500] + "..."
-                    texts.append(f"📚 **Info {i}**\n{answer}\n")
-            elif isinstance(r, str):
-                texts.append(f"📚 **Info {i}**\n{r[:1500]}\n")
-        
-        if texts:
-            return "\n---\n".join(texts)
-    
-    return str(results)[:2000]
 
+# ─────────────────────────────────────────────
+# 🧹 CONTENT CLEANER
+# ─────────────────────────────────────────────
+def _clean_content(text: str) -> str:
+    if not text:
+        return ""
+    text = re.sub(r'^Source:\s*https?://\S+\s*\n+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'Website:\s*\S+\s*\n+Content:\s*', '', text, flags=re.DOTALL)
+    text = re.sub(r'^PDF\s+\S+\s+content:\s*', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'^YouTube video\s+\S+\s+transcript:\s*', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'^GitHub\s+\S+\s+file\s+\S+:\s*', '', text, flags=re.IGNORECASE)
+    text = text.strip()
+    if len(text) > 1500:
+        text = text[:1500] + "..."
+    return text
+
+
+def get_website_summary(url):
+    return ask_knowledge(f"What is {url} about? Give me a summary.")
+
+
+# ─────────────────────────────────────────────
 # 📺 YOUTUBE LEARNING
+# ─────────────────────────────────────────────
 def extract_video_id(url):
     regex = r"(?:v=|youtu\.be/)([A-Za-z0-9_-]+)"
     match = re.search(regex, url)
     return match.group(1) if match else None
 
 def train_youtube(url):
-    print(f"[WebAgent] Training on YouTube: {url}")
+    print(f"\n{'='*60}\n📺 TRAIN YOUTUBE: {url}\n{'='*60}")
+    start_time = time.time()
     video_id = extract_video_id(url)
     if not video_id:
         return {"success": False, "content": "❌ Invalid YouTube URL"}
-
     try:
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
         text = " ".join([x["text"] for x in transcript])
+        print(f"✅ Transcript: {len(text)} chars")
 
         words = text.split()
-        chunks = [" ".join(words[i:i+400]) for i in range(0, len(words), 400)]
+        chunks = [" ".join(words[i:i+300]) for i in range(0, len(words), 270)]
+        stored = store_chunks_in_faiss(url, chunks, source_type="youtube")
 
-        stored_count = 0
-        for chunk in chunks:
-            enriched_chunk = f"YouTube video {url} transcript: {chunk}"
-            try:
-                memory.store(
-                    question=f"youtube_{video_id}",
-                    answer=enriched_chunk,
-                    source_agent="youtube_knowledge",
-                    confidence=0.95,
-                    content_type="youtube"
-                )
-                stored_count += 1
-            except Exception as e:
-                print(f"Store error: {e}")
-
-        return {"success": True, "content": f"✅ YouTube learned. {stored_count} chunks stored."}
+        elapsed = time.time() - start_time
+        print(f"✅ YOUTUBE DONE: {stored} chunks in {elapsed:.2f}s")
+        return {"success": True, "content": f"✅ YouTube learned. {stored} chunks stored."}
     except Exception as e:
+        print(f"❌ YouTube error: {e}")
         return {"success": False, "content": f"❌ YouTube error: {str(e)}"}
 
+
+# ─────────────────────────────────────────────
 # 💻 GITHUB LEARNING
+# ─────────────────────────────────────────────
 import shutil
 
 def train_github(repo_url):
-    print(f"[WebAgent] Training on GitHub: {repo_url}")
+    print(f"\n{'='*60}\n💻 TRAIN GITHUB: {repo_url}\n{'='*60}")
+    start_time = time.time()
     temp_dir = None
     try:
         temp_dir = tempfile.mkdtemp()
+        print(f"📥 Cloning to {temp_dir}")
         Repo.clone_from(repo_url, temp_dir)
-        stored = 0
+
+        chunks = []
         for root, _, files in os.walk(temp_dir):
             for file in files:
-                if file.endswith((".py",".md",".txt",".json",".js",".html",".css")):
+                if file.endswith((".py", ".md", ".txt", ".json", ".js", ".html", ".css")):
                     path = os.path.join(root, file)
                     try:
                         with open(path, "r", errors="ignore") as f:
-                            text = f.read()
-                        text = text[:2000]
-                        enriched_text = f"GitHub {repo_url} file {file}: {text}"
-                        memory.store(
-                            question=f"github_{repo_url.replace('/', '_')[:50]}",
-                            answer=enriched_text,
-                            source_agent="github_knowledge",
-                            confidence=0.95,
-                            content_type="github"
-                        )
-                        stored += 1
+                            text = f.read()[:2000]
+                        chunks.append(f"File: {file}\n\n{text}")
                     except Exception as e:
-                        print(f"File read error: {e}")
-                        continue
+                        print(f"   ⚠️ {file}: {e}")
+
+        stored = store_chunks_in_faiss(repo_url, chunks, source_type="github")
+        elapsed = time.time() - start_time
+        print(f"✅ GITHUB DONE: {stored} files in {elapsed:.2f}s")
         return {"success": True, "content": f"✅ GitHub learned. {stored} files stored."}
     except Exception as e:
+        print(f"❌ GitHub error: {e}")
         return {"success": False, "content": f"❌ GitHub error: {str(e)}"}
     finally:
         if temp_dir and os.path.exists(temp_dir):
             shutil.rmtree(temp_dir, ignore_errors=True)
 
+
+# ─────────────────────────────────────────────
 # 📄 PDF LEARNING
+# ─────────────────────────────────────────────
 def train_pdf(path):
-    print(f"[WebAgent] Training on PDF: {path}")
+    print(f"\n{'='*60}\n📄 TRAIN PDF: {path}\n{'='*60}")
+    start_time = time.time()
     try:
         reader = PdfReader(path)
         full_text = ""
-        for page in reader.pages:
+        pages = len(reader.pages)
+        print(f"   Pages: {pages}")
+        for i, page in enumerate(reader.pages, 1):
             txt = page.extract_text()
             if txt:
                 full_text += txt + "\n"
+            if i % 10 == 0:
+                print(f"   {i}/{pages} pages...")
+
         if not full_text.strip():
             return {"success": False, "content": "❌ No text extracted from PDF"}
+
+        print(f"✅ Extracted {len(full_text)} chars")
         words = full_text.split()
-        chunks = [" ".join(words[i:i+400]) for i in range(0, len(words), 400)]
-        stored_count = 0
-        for chunk in chunks:
-            enriched_chunk = f"PDF {os.path.basename(path)} content: {chunk}"
-            try:
-                memory.store(
-                    question=f"pdf_{os.path.basename(path)}",
-                    answer=enriched_chunk,
-                    source_agent="pdf_knowledge",
-                    confidence=0.95,
-                    content_type="pdf"
-                )
-                stored_count += 1
-            except Exception as e:
-                print(f"Store error: {e}")
-        return {"success": True, "content": f"✅ PDF learned. {stored_count} chunks stored."}
+        chunks = [" ".join(words[i:i+300]) for i in range(0, len(words), 270)]
+        stored = store_chunks_in_faiss(os.path.basename(path), chunks, source_type="pdf")
+
+        elapsed = time.time() - start_time
+        print(f"✅ PDF DONE: {stored} chunks in {elapsed:.2f}s")
+        return {"success": True, "content": f"✅ PDF learned. {stored} chunks stored."}
     except Exception as e:
+        print(f"❌ PDF error: {e}")
         return {"success": False, "content": f"❌ PDF error: {str(e)}"}
+
+
+# ─────────────────────────────────────────────
+# 🔧 SHARED FAISS CHUNK STORE HELPER
+# ─────────────────────────────────────────────
+def store_chunks_in_faiss(source_id: str, chunks: list, source_type: str = "web") -> int:
+    """
+    Unified helper — YouTube, GitHub, PDF sab isko use karein.
+    FIX: Pehle train_youtube/github/pdf mein memory.store() call hoti thi
+    jo undefined thi. Ab sab FAISS mein jaata hai.
+    """
+    try:
+        from memory.vector_store import add_memory
+        import hashlib
+
+        stored = 0
+        for i, chunk in enumerate(chunks):
+            clean_chunk = chunk.strip()
+            if not clean_chunk:
+                continue
+            chunk_hash = hashlib.md5(f"{source_id}_{i}_{chunk[:100]}".encode()).hexdigest()
+            memory_id = int(chunk_hash[:8], 16) % 1000000
+            add_memory(
+                text=clean_chunk,
+                memory_id=memory_id,
+                metadata={
+                    "source": source_type,
+                    "url": source_id,
+                    "chunk_index": i,
+                    "type": f"{source_type}_content",
+                    "timestamp": datetime.now().isoformat()
+                }
+            )
+            stored += 1
+            if stored % 20 == 0:
+                print(f"   Stored {stored}/{len(chunks)} chunks...")
+
+        print(f"✅ FAISS [{source_type}]: {stored} chunks stored for {source_id}")
+        return stored
+    except Exception as e:
+        print(f"❌ FAISS store error [{source_type}]: {e}")
+        return 0

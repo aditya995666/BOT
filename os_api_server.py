@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from agents.os_control_agent import OSControlAgent
 from agents.browser_control_agent import BrowserControlAgent
-from agents.system_evolution_advisor import SystemEvolutionAdvisor
 from agents.research_agent import ResearchAgent
 from brain.gemini_llm import GeminiBrain
 
@@ -36,25 +35,11 @@ llm_adapter = GeminiAdapter()
 from agents.router import IntelligentRouter
 
 router_instance = IntelligentRouter()
-evolution_advisor = SystemEvolutionAdvisor(os_agent, llm_adapter)
 
 
 @app.get("/")
 def root():
-    return {"status": "JARVIS OS API Running 🚀"}
-
-
-from config import system_flags
-
-@app.post("/system/toggle-gemini")
-def toggle_gemini(token: HTTPAuthorizationCredentials = Depends(verify_token)):
-    system_flags.USE_GEMINI = not system_flags.USE_GEMINI
-    return {
-        "success": True,
-        "gemini_enabled": system_flags.USE_GEMINI
-    }
-
-# --- Basic Browser Operations ---
+    return {"status": "JARVIS OS API Running 🚀"}# --- Basic Browser Operations ---
 
 @app.post("/browser/open")
 def open_browser(url: str, token: HTTPAuthorizationCredentials = Depends(verify_token)):
@@ -254,80 +239,7 @@ def research_and_train_sync(topic: str, token: HTTPAuthorizationCredentials = De
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def get_evolution_advisor():
-    """Initialize evolution advisor if not already done"""
-    if router_instance.evolution_advisor is None:
-        print("🔄 Initializing Evolution Advisor...")
-        try:
-            from agents.system_evolution_advisor import SystemEvolutionAdvisor
-            
-            # Ensure research agent exists
-            if router_instance.research_agent is None:
-                from agents.research_agent import ResearchAgent
-                router_instance.research_agent = ResearchAgent()
-            
-            router_instance.evolution_advisor = SystemEvolutionAdvisor(
-                router=router_instance,
-                llm_client=router_instance.brain,
-                research_agent=router_instance.research_agent
-            )
-            print("✅ Evolution Advisor initialized")
-        except Exception as e:
-            print(f"❌ Evolution Advisor init failed: {e}")
-            router_instance.evolution_advisor = None
-    
-    return router_instance.evolution_advisor
 
-@app.post("/system/evolve")
-def evolve_system(token: HTTPAuthorizationCredentials = Depends(verify_token)):
-    try:
-        # Get or create evolution advisor
-        advisor = get_evolution_advisor()
-        
-        if advisor is None:
-            # Return fallback response if advisor not available
-            from datetime import datetime
-            return {
-                "success": True,
-                "result": {
-                    "pdf_report": None,
-                    "analysis": {
-                        "system_score": 75,
-                        "score_change": 0,
-                        "missing_features": ["Evolution advisor initializing"],
-                        "timestamp": datetime.now().isoformat()
-                    },
-                    "roadmap": {
-                        "Immediate Focus": ["System stability"],
-                        "Mid Term Evolution": ["Feature enhancements"],
-                        "Long Term Vision": "Autonomous system",
-                        "Current Status": "Stable"
-                    },
-                    "graph_path": None,
-                    "message": "Evolution system ready. Please try again."
-                }
-            }
-        
-        # Run evolution cycle
-        result = advisor.run_full_evolution_cycle()
-        return {"success": True, "result": result}
-        
-    except Exception as e:
-        print(f"Evolution error: {e}")
-        from datetime import datetime
-        return {
-            "success": False,
-            "result": {
-                "error": str(e),
-                "analysis": {
-                    "system_score": 0,
-                    "score_change": 0,
-                    "missing_features": [],
-                    "timestamp": datetime.now().isoformat()
-                },
-                "message": f"Error: {str(e)}"
-            }
-        }
 
 @app.post("/camera/open")
 def open_camera(token: HTTPAuthorizationCredentials = Depends(verify_token)):
@@ -432,22 +344,6 @@ def web_scan(filename: str = None, token: HTTPAuthorizationCredentials = Depends
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-from apscheduler.schedulers.background import BackgroundScheduler
-import requests
 
-def auto_evolve_report():
-    try:
-        print("⏰ Triggering auto evolution report via OS API...")
-        url = "http://127.0.0.1:8000/system/evolve"
-        headers = {"Authorization": f"Bearer {SECRET_TOKEN}"}
-        response = requests.post(url, headers=headers)
-        if response.status_code == 200:
-            print("✅ Auto evolution PDF generated successfully")
-        else:
-            print(f"❌ Auto evolution failed: {response.status_code}, {response.text}")
-    except Exception as e:
-        print("❌ Scheduler error:", e)
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(auto_evolve_report, 'interval', hours=2)
-scheduler.start()
+

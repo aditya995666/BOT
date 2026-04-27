@@ -2,7 +2,6 @@ import time
 import re
 from agents.browser_control_agent import BrowserControlAgent
 import requests
-from agents.system_evolution_advisor import SystemEvolutionAdvisor
 from handlers.os_handler import OSHandler
 from handlers.browser_handler import BrowserHandler
 from handlers.research_handler import ResearchHandler
@@ -36,11 +35,7 @@ try:
 except ImportError:
     OS_AGENT_AVAILABLE = False
 
-try:
-    from utils.code_cleaner import extract_pure_python_code
-except ImportError:
-    def extract_pure_python_code(code):
-        return code
+from utils.code_cleaner import extract_pure_python_code
 
 try:
     from agents.pdf_agent import PDFAgent
@@ -58,7 +53,18 @@ except ImportError:
     OCR_AVAILABLE = False
     def extract_text_from_pdf_ocr(pdf_path):
         return "OCR not available."
+# 🔥 IMPORT EPISODIC MEMORY AND NEURAL ENGINE
+try:
+    from memory.episodic_memory import episodic_memory
+    EPISODIC_AVAILABLE = True
+except ImportError:
+    EPISODIC_AVAILABLE = False
 
+try:
+    from brain.neural_engine import neural_engine
+    NEURAL_AVAILABLE = True
+except ImportError:
+    NEURAL_AVAILABLE = False
 def call_os_api(url, payload=None):
     try:
         headers = {"Authorization": "Bearer jarvis123"}
@@ -102,28 +108,62 @@ except ImportError:
             return f"I am JARVIS (fallback). You said: {prompt}"
 
 # 🌐 UNIVERSAL WEB KNOWLEDGE AGENT
+# 🌐 UNIVERSAL WEB KNOWLEDGE AGENT
+# 🌐 UNIVERSAL WEB KNOWLEDGE AGENT
+# Yeh purana hai:
+# 🌐 UNIVERSAL WEB KNOWLEDGE AGENT - SINGLE IMPORT
 try:
-    from agents.web_agent import train_website, train_youtube, train_github, train_pdf, ask_knowledge
+    from agents.web_agent import (
+        train_website, 
+        train_youtube, 
+        train_github, 
+        train_pdf, 
+        ask_knowledge, 
+        process_url_if_present, 
+        is_url_processed,
+        get_active_url  # ✅ IMPORTANT - yeh add karo
+    )
     WEB_AGENT_AVAILABLE = True
-except ImportError:
+    print("✅ Web agent loaded successfully")
+except ImportError as e:
     WEB_AGENT_AVAILABLE = False
+    print(f"⚠️ Web agent import warning: {e}")
+    # Fallback functions
+    def ask_knowledge(q): return "❌ Web agent missing. Run: pip install beautifulsoup4 gitpython youtube-transcript-api pypdf"
+    def train_website(url): return {"success": False, "content": "Web agent dependencies missing"}
+    def train_youtube(url): return {"success": False, "content": "YouTube agent missing"}
+    def train_github(url): return {"success": False, "content": "GitHub agent missing"}
+    def train_pdf(path): return {"success": False, "content": "PDF agent missing"}
+    def process_url_if_present(text): return False, None
+    def is_url_processed(url): return False
+    def get_active_url(): return None
+# 🔥 Yeh naya karo:
 
-# ✅ FIXED: Import real coding_super_agent
+# Coding agent loads alone so a failure in document/image/emotion does not disable it.
 try:
     from agents.coding_super_agent import coding_super_agent
+    if not _AGENTS_PRINTED:
+        print("✅ Coding super agent loaded")
+except ImportError:
+    class coding_super_agent:
+        @staticmethod
+        def code(q, history=None):
+            return {"success": False, "error": "Coding agent not available", "stage": "failed"}
+
+try:
     from agents.document_agent import document_agent
     from agents.emotion_agent import detect_emotion as emotion_agent
     from agents.image_agent import image_agent
     AGENTS_AVAILABLE = True
     if not _AGENTS_PRINTED:
-        print("✅ All agents loaded")
+        print("✅ Document / emotion / image agents loaded")
         _AGENTS_PRINTED = True
 except ImportError:
     AGENTS_AVAILABLE = False
-    class coding_super_agent:
-        @staticmethod
-        def code(q, history=None):
-            return {"success": False, "error": "Coding agent not available", "stage": "failed"}
+
+    def document_agent(context: str, query: str, history=None, pdf_path=None, pdf_paths=None):
+        return {"success": False, "error": "Document agent not available"}
+
     emotion_agent = lambda x: "neutral"
     image_agent = lambda x: f"image({x})"
 
@@ -191,6 +231,8 @@ class IntelligentRouter:
     def __init__(self):
         from memory.vector_store import load_existing_memory
         load_existing_memory()
+        self.session_context = {}  # Optional, can keep as cache
+
         
         # From first __init__
         self._brain_instance = None
@@ -223,20 +265,8 @@ class IntelligentRouter:
         self.browser_handler = BrowserHandler(self.browser_agent)
         self.research_handler = ResearchHandler("http://127.0.0.1:8000")
 
-        # Evolution advisor
-        # Evolution advisor - INITIALIZED
-        try:
-            from agents.system_evolution_advisor import SystemEvolutionAdvisor
-            self.evolution_advisor = SystemEvolutionAdvisor(
-                router=self,
-                llm_client=self.brain,  # GeminiBrain instance
-                research_agent=self.research_agent
-            )
-            print("✅ System Evolution Advisor loaded and initialized")
-        except Exception as e:
-            self.evolution_advisor = None
-            print(f"⚠️ System Evolution Advisor not available: {e}")
-        
+ 
+                
         # PDF Agent
         if PDF_AGENT_AVAILABLE:
             self.pdf_agent = PDFAgent()
@@ -259,7 +289,6 @@ class IntelligentRouter:
             "os": self._handle_os,
             "browser_action": self._handle_browser,
             "research": self._handle_research,
-            "evolution": self._evolution,
             "pdf": self._handle_pdf,
             "autoclicker": self._handle_autoclicker,
             "browser_form": self._handle_browser_form,
@@ -327,15 +356,18 @@ class IntelligentRouter:
 
     def _detect_intent(self, q, context=None, history=None):
         ql = q.lower()
-        url = self._extract_url(q)
         
-        # ========== LEVEL 1: HARDCODED (NO CHANGE) ==========
+        # 🔥 FIX 1: SABSE PEHLE - PDF context check
+        if context:
+            has_pdf_paths = context.get("pdf_paths") and len(context.get("pdf_paths", [])) > 0
+            has_doc_text = context.get("document_text") and len(context.get("document_text", "")) > 100
+            if has_pdf_paths or has_doc_text:
+                print("📄 PDF context detected - forcing document intent")
+                return "document"
         
-        # Browser form active
-        if self.browser_form_active and hasattr(self.browser_agent, 'form_session') and self.browser_agent.form_session:
-            return "browser_form"
+        # ========== MANUAL KEYWORDS (Only for specific agents as requested) ==========
         
-        # AutoClicker - HARDCODED
+        # AutoClicker - MANUAL (as requested)
         autoclicker_keywords = ['click', 'press', 'tap', 'double click', 'right click', 'type', 'keyboard', 
                             'press key', 'scroll', 'mouse', 'auto click', 'autoclicker', 'button', 'submit', 
                             'ok', 'cancel', 'next', 'previous', 'save', 'delete', 'edit', 'open', 'close', 
@@ -343,14 +375,20 @@ class IntelligentRouter:
         if any(kw in ql for kw in autoclicker_keywords):
             return "autoclicker"
         
-        # Form filling - HARDCODED
-        form_keywords = ["form bharo", "form fill", "ye form bhar do", "form fill karo", "signup karo", 
-                        "login karo", "register karo", "naya account bana", "account create", "create account", 
-                        "sign up", "log in"]
-        if any(kw in ql for kw in form_keywords):
-            return "browser_form"
+        # OS Commands - MANUAL (as requested)
+        os_words = ["open app", "close", "shutdown", "type", "click", "run python", "create file", 
+                "camera", "screenshot", "write", "enter text"]
+        if any(word in ql for word in os_words):
+            return "os"
         
-        # Research - HARDCODED
+        # Browser Actions - MANUAL (as requested)
+        browser_keywords = ["chrome open", "browser khol", "chrome kholo", "google chrome open", 
+                        "site kholo", "url open", "website khol", "page open karo", "click karo", 
+                        "ispe click", "button dabao", "link pe jaao", "submit kar do", "form submit"]
+        if any(kw in ql for kw in browser_keywords):
+            return "browser_action"
+        
+        # Research - MANUAL (as requested)
         research_keywords = ["research", "do research", "research about", "research on", "deep research", 
                             "internet research", "find information on", "search for topic", "look up topic", 
                             "study topic", "train yourself", "trained on"]
@@ -358,41 +396,37 @@ class IntelligentRouter:
             if keyword in ql:
                 return "research"
         
-        # OS Commands - HARDCODED
-        os_words = ["open app", "close", "shutdown", "type", "click", "run python", "create file", 
-                "camera", "screenshot", "write", "enter text"]
-        if any(word in ql for word in os_words):
-            return "os"
-        
-        # Browser Actions - HARDCODED
-        browser_keywords = ["chrome open", "browser khol", "chrome kholo", "google chrome open", 
-                        "site kholo", "url open", "website khol", "page open karo", "click karo", 
-                        "ispe click", "button dabao", "link pe jaao", "submit kar do", "form submit"]
-        if any(kw in ql for kw in browser_keywords):
-            return "browser_action"
-        
-        # PDF Generation - HARDCODED
+        # PDF Generation - MANUAL
         pdf_words = ["generate pdf", "create pdf", "make pdf", "pdf bana", "pdf generate", 
                     "convert to pdf", "save as pdf"]
         if any(word in ql for word in pdf_words):
             return "pdf"
         
-        # Evolution - HARDCODED
+        # Evolution - MANUAL
         if any(x in ql for x in ["evolve system", "system evolution", "upgrade system", "analyze architecture"]):
             return "evolution"
         
-        # Image/Voice/Emotion/System - HARDCODED
-        if any(x in ql for x in ["image", "photo"]): return "image"
-        if any(x in ql for x in ["voice", "audio", "speak", "bolo"]): return "voice"
-        if any(x in ql for x in ["emotion", "sad", "happy"]): return "emotion"
-        if any(x in ql for x in ["system", "health", "logs"]): return "system"
-        if any(x in ql for x in ["improve ai", "self improve"]): return "improvement"
+        # ========== STATE/URL BASED (No keywords) ==========
         
-        # ========== LEVEL 2: AUTO DETECT (AI + Simple Rules) ==========
+        # Browser form active
+        if self.browser_form_active and hasattr(self.browser_agent, 'form_session') and self.browser_agent.form_session:
+            return "browser_form"
         
         # URL present → webask
+        # URL present - AI ko chance do pehle
+        url = self._extract_url(q)
         if url:
-            return "webask"
+            # 🔥 AI intent detection for URL queries (same prompt use karo)
+            print(f"🔗 URL detected: {url}, checking AI intent...")
+            # Yahan AI detection allow karo, manual fallback baad mein
+            pass  # AI detection niche already hai, isliye yahan return mat karo
+        
+        # Form filling - detect patterns
+        form_keywords = ["form bharo", "form fill", "ye form bhar do", "form fill karo", "signup karo", 
+                        "login karo", "register karo", "naya account bana", "account create", "create account", 
+                        "sign up", "log in"]
+        if any(kw in ql for kw in form_keywords):
+            return "browser_form"
         
         # Document uploaded and asking about it
         if context and context.get("document_text"):
@@ -401,57 +435,46 @@ class IntelligentRouter:
             if any(kw in ql for kw in doc_keywords):
                 return "document"
         
-        # Coding (but not summary of website)
-        coding_indicators = ["code", "function", "def ", "class ", "algorithm", "program", "script", 
-                            "python", "java", "javascript", "c++", "generate", "develop", "api", "bug", "error", "fix"]
-        if any(ind in ql for ind in coding_indicators):
-            if "summary" not in ql and "website" not in ql:
-                return "coding"
+        # ========== AI-BASED INTENT DETECTION (For remaining: coding, knowledge, general, etc.) ==========
         
-        # Learn website
-        if any(x in ql for x in ["learn website", "train website", "crawl website", "learn youtube", 
-                                "train youtube", "learn github", "train github", "learn pdf"]):
-            return "weblearn"
-        
-        # Ask from learned data
-        if any(x in ql for x in ["from learned data", "from knowledge", "from stored", "learned data me", 
-                                "jo maine paste kiya", "from website", "from youtube", "from github"]):
-            return "webask"
-        
-        # Knowledge questions
-        knowledge_indicators = ["what is", "how to", "why does", "explain", "tell me about", "define", 
-                            "what are", "how does", "why is", "when did", "who is", "where is", "meaning of"]
-        if any(ind in ql for ind in knowledge_indicators):
-            return "knowledge"
-        
-        # General chat
-        general_indicators = ["hi", "hello", "hey", "namaste", "how are you", "good morning", "thanks", "bye", "kaise ho"]
-        if any(ind in ql for ind in general_indicators):
-            return "general"
-        
-        # ========== LEVEL 3: AI FALLBACK (Only for truly ambiguous) ==========
         print(f"🤖 AI Intent Detection: {q[:50]}...")
+        
         try:
             prompt = f"""
-            Classify this user query into ONE intent:
-            - coding: asking for code/programming help
-            - knowledge: asking for information/facts/explanation
-            - general: casual chat, greetings, small talk
-            - document: asking about uploaded documents/files
-            - webask: asking about a website or learned data
+            Analyze this user query and classify into ONE intent.
             
             Query: "{q}"
+            
+            Intent categories:
+            - coding: asking for code, function, program, algorithm, bug fix, code improvement, writing code
+            - knowledge: asking for information, facts, explanation, how-to, what-is, define, meaning
+            - general: casual chat, greeting, small talk, thanks, bye, how are you
+            - document: asking about uploaded document content
+            - webask: asking about a website or previously learned data (especially if query contains URL)
+            - image: asking about image, photo, picture
+            - voice: asking about voice, audio, speak, bolo
+            - emotion: asking about emotion, sad, happy, feeling
             
             Return ONLY the intent name, nothing else.
             """
             result = self.brain.think(prompt).strip().lower()
-            if result in ["coding", "knowledge", "general", "document", "webask"]:
+            
+            valid_intents = ["coding", "knowledge", "general", "document", "webask", 
+                            "image", "voice", "emotion"]
+            
+            if result in valid_intents:
                 print(f"🤖 AI detected intent: {result}")
                 return result
+                
         except Exception as e:
             print(f"AI intent detection failed: {e}")
-        
+        url = self._extract_url(q)
+        if url:
+            print(f"🔗 Fallback: URL detected -> webask")
+            return "webask"
+        # Fallback to general
         return "general"
+    
     def _call_agent_with_fallback(self, agent_fn, q, c, h, intent, brain_hint=None):
         """Call agent with fallback handling"""
         result = {"content": "No result"}
@@ -477,7 +500,7 @@ class IntelligentRouter:
             result = {"content": f"Agent failed: {e}"}
         
         # Store in memory for learning
-        if intent not in ["autoclicker", "browser_form"]:
+        if intent not in ["autoclicker", "browser_form","document"]:
             try:
                 answer = result.get("content", "")
                 if answer and len(str(answer).strip()) > 5:
@@ -485,6 +508,7 @@ class IntelligentRouter:
             except:
                 pass
         return result
+    
     def _handle_os(self, q, c, h):
         return self.os_handler.handle(q)
 
@@ -546,8 +570,88 @@ class IntelligentRouter:
             return {"success": False, "content": f"Research failed: {str(e)}"}
 
     def route(self, query, user_id="default", context=None, history=None):
-    # ========== FIRST DETECT INTENT ==========
+    
+        # ========== EPISODIC MEMORY & NEURAL ENGINE ==========
+    
+        # Get neural engine suggestion (mistakes to avoid)
+        if NEURAL_AVAILABLE:
+            neural_hint = neural_engine.get_suggestion(query)
+            if neural_hint:
+                print(f"🧠 Neural hint: {neural_hint.get('action', 'be careful')}")
+                context = context or {}
+                context["neural_hint"] = neural_hint
+        
+        # Recall similar past interactions
+        if EPISODIC_AVAILABLE:
+            similar_past = episodic_memory.recall(query, limit=3)
+            if similar_past:
+                print(f"📚 Found {len(similar_past)} similar past interactions")
+                context = context or {}
+                context["similar_past"] = similar_past
+        
+        # ========== YOUR EXISTING CODE CONTINUES ==========
+        # ... (rest of your route method)
+    
+        # ========== STEP 0: SESSION CONTEXT MEMORY (USING MEMORY MANAGER) ==========
+        
+        # 🔥 Store ANY content using MEMORY MANAGER (not self.session_context)
+        is_content_shared = (
+            "```" in query or
+            "def " in query or
+            "class " in query or
+            "import " in query or
+            "{" in query and "}" in query or
+            "<" in query and ">" in query or
+            len(query) > 200
+        )
+        
+        if is_content_shared:
+            content_type = "unknown"
+            if "def " in query or "class " in query or "import " in query:
+                content_type = "code"
+            elif "{" in query and "}" in query:
+                content_type = "json"
+            elif "<" in query and ">" in query:
+                content_type = "html/xml"
+            else:
+                content_type = "text"
+            
+            # 🔥 USE MEMORY MANAGER INSTEAD OF self.session_context
+            self.memory.store_conversation_context(user_id, "last_content", query)
+            self.memory.store_conversation_context(user_id, "last_content_type", content_type)
+            print(f"📝 [CONTEXT] Stored {content_type} content for user {user_id}")
+        
+        # 🔥 Retrieve context using MEMORY MANAGER
+        reference_keywords = [
+            "esko", "isko", "ye", "yeh", "this", "that", "it", "these",
+            "is content ko", "this content", "that content",
+            "upar wala", "previous", "last", "pehle wala",
+            "jo maine bheja", "paste kiya", "share kiya"
+        ]
+        
+        if any(kw in query.lower() for kw in reference_keywords):
+            # 🔥 USE MEMORY MANAGER
+            previous_content = self.memory.get_conversation_context(user_id, "last_content")
+            content_type = self.memory.get_conversation_context(user_id, "last_content_type")
+            
+            if previous_content:
+                context = context or {}
+                context["previous_content"] = previous_content
+                context["previous_content_type"] = content_type or "content"
+                context["has_previous_context"] = True
+                
+                print(f"📝 [CONTEXT] Retrieved previous {content_type} for user {user_id}")
+                
+                if history is None:
+                    history = []
+                history.append({
+                    "role": "user",
+                    "content": f"[Previous content shared by user]:\n{previous_content}\n\n[Current query]: {query}"
+                })
+        
+        # ========== EXISTING CODE CONTINUES ==========
         temp_intent = self._detect_intent(query, context, history)
+        # ... rest of your existing code (same as before)
         
         # 🔥 FIX: Coding intent ke liye directly coding agent call karo
         if temp_intent == "coding":
@@ -559,28 +663,51 @@ class IntelligentRouter:
         
         # ========== REST FOR OTHER INTENTS ==========
         # Normal clarification check for other intents
-        clar_result = clarification_engine.analyze_query(
-            query=query,
-            intent=temp_intent,
-            history=history or [],
-            user_id=user_id
-        )
+        # ========== REST FOR OTHER INTENTS ==========
         
-        if clar_result.get("unclear") and clar_result.get("question"):
-            return {
-                "success": True,
-                "agent_used": "clarification",
-                "result": {
-                    "content": f"🤔 **Clarification Needed:**\n\n{clar_result['question']}",
-                    "needs_clarification": True,
-                    "original_query": query
-                },
-                "timestamp": datetime.now().isoformat()
-            }
+        # 🔥 SKIP CLARIFICATION FOR DOCUMENT INTENT WHEN PDF UPLOADED
+        skip_clarification = False
+        
+        # Skip if document intent and PDF/document is already uploaded
+        if temp_intent == "document":
+            if context and context.get("pdf_paths") and len(context.get("pdf_paths", [])) > 0:
+                skip_clarification = True
+                print("📄 Skipping clarification - PDF already uploaded")
+            elif context and context.get("document_text") and len(context.get("document_text", "")) > 100:
+                skip_clarification = True
+                print("📄 Skipping clarification - Document text available")
+        
+        # Also skip for coding intent (already handled)
+        if temp_intent == "coding":
+            skip_clarification = True
+        
+        # Skip for URL queries
+        if self._extract_url(query):
+            skip_clarification = True
+        
+        # Only run clarification if not skipped
+        if not skip_clarification:
+            clar_result = clarification_engine.analyze_query(
+                query=query,
+                intent=temp_intent,
+                history=history or [],
+                user_id=user_id
+            )
+            
+            if clar_result.get("unclear") and clar_result.get("question"):
+                return {
+                    "success": True,
+                    "agent_used": "clarification",
+                    "result": {
+                        "content": f"🤔 **Clarification Needed:**\n\n{clar_result['question']}",
+                        "needs_clarification": True,
+                        "original_query": query
+                    },
+                    "timestamp": datetime.now().isoformat()
+                }
         
         # Rest of your code continues...
         url = self._extract_url(query)
-    # ... auto URL processing, master check, ethical check, etc.
         
         # ========== STEP 2: Auto URL Processing ==========
         if url and WEB_AGENT_AVAILABLE:
@@ -609,7 +736,6 @@ class IntelligentRouter:
                         "timestamp": datetime.now().isoformat()
                     }
             
-            # URL + question = answer from learned data
             # URL + question = answer from learned data
             ask_keywords = ['kya hai', 'what is', 'tell me', 'about', 'summary', 
                         'content', 'bataye', 'padhkar', 'explain', 'describe']
@@ -659,21 +785,55 @@ class IntelligentRouter:
             }
         
         # ========== STEP 5: Memory Check ==========
+        # ========== STEP 5: Memory Check ==========
+        # ========== STEP 5: Memory Check ==========
         try:
             if len(query.strip()) > 3:
-                mem_answer = self.memory.query_knowledge(query, top_k=5)
-                if mem_answer and len(str(mem_answer).strip()) > 30:
-                    return {
-                        "success": True,
-                        "agent_used": "knowledge_memory",
-                        "result": {
-                            "content": f"📚 **From stored knowledge:**\n\n{mem_answer}"
-                        },
-                        "timestamp": datetime.now().isoformat()
-                    }
+                has_pdf = (
+                    context and (
+                        (context.get("pdf_paths") and len(context.get("pdf_paths", [])) > 0)
+                        or
+                        (context.get("document_text") and len(context.get("document_text", "")) > 100)
+                    )
+                )
+                
+                if has_pdf:
+                    print("📄 PDF context present - skipping memory")
+                else:
+                    mem_answer = self.memory.query_knowledge(query, top_k=5)
+                    if mem_answer and len(str(mem_answer).strip()) > 30:
+                        
+                        # 🔥 YAHI FIX HAI - Grok se summarize karo
+                        summary_prompt = f"""User ne poocha: "{query}"
+
+        Niche website ka raw content hai. Iske basis par ek clean, helpful summary do.
+        - Bullet points use karo
+        - Simple language mein likho  
+        - Raw text copy mat karo
+        - 150 words se zyada mat likho
+
+        Raw content:
+        {str(mem_answer)[:2000]}"""
+
+                        try:
+                            clean_summary = self.brain.think(summary_prompt)
+                            return {
+                                "success": True,
+                                "agent_used": "knowledge_memory",
+                                "result": {"content": f"📚 **Summary:**\n\n{clean_summary}"},
+                                "timestamp": datetime.now().isoformat()
+                            }
+                        except:
+                            # Fallback - raw return
+                            return {
+                                "success": True,
+                                "agent_used": "knowledge_memory", 
+                                "result": {"content": f"📚 **From stored knowledge:**\n\n{mem_answer}"},
+                                "timestamp": datetime.now().isoformat()
+                            }
         except Exception as e:
             print(f"Memory knowledge query error: {e}")
-        
+                
         # ========== STEP 6: Safety Layers ==========
         if FIRMWARE_AVAILABLE:
             fw = firmware_controller.inspect(query, history, context)
@@ -687,12 +847,14 @@ class IntelligentRouter:
                 return {"success": False, "reason": "🚫 Blocked by moderation"}
         
         # ========== STEP 7: Intent Detection & Routing ==========
+        # ========== STEP 7: Intent Detection & Routing ==========
         start = time.time()
-        intent = self._detect_intent(query, context, history)
-        agent_fn = self.agents.get(intent, self._general)
-        
-        result = self._call_agent_with_fallback(agent_fn, query, context, history, intent)
 
+        # 🔥 FIX 3: Dobara detect mat karo - temp_intent reuse karo
+        intent = temp_intent  # ← sirf yeh line change karo
+        agent_fn = self.agents.get(intent, self._general)
+
+        result = self._call_agent_with_fallback(agent_fn, query, context, history, intent)
         if isinstance(result, dict) and "content" in result:
             pass
         elif isinstance(result, str):
@@ -729,15 +891,62 @@ class IntelligentRouter:
             "result": result,
             "timestamp": datetime.now().isoformat()
         }
-        return response
-    def _document(self, q, c, h):
-        document_text = c.get("document_text") if c else None
-        if not document_text:
-            return {"success": False, "result": {"content": "❌ No document uploaded."}}
-        from agents.document_agent import document_agent
-        result = document_agent(context=document_text, query=q, history=h, pdf_path=None)
         
-        # 🔥 FIX: Ensure result is properly formatted
+        # ========== STORE IN EPISODIC MEMORY & NEURAL ENGINE ==========
+        if EPISODIC_AVAILABLE:
+            episodic_memory.remember({
+                "query": query,
+                "response": response,
+                "user_id": user_id,
+                "timestamp": datetime.now().isoformat()
+            })
+        
+        if NEURAL_AVAILABLE:
+            neural_engine.learn_from_interaction({
+                "query": query,
+                "response": response,
+                "user_id": user_id
+            })
+        
+        return response
+    
+    def _document(self, q, c, h):
+        # 🔥 Get document text from context
+        document_text = c.get("document_text") if c else None
+        
+        # 🔥 CRITICAL: Get PDF paths from context
+        pdf_paths = c.get("pdf_paths", []) if c else []
+        
+        # 🔥 Also check session state for PDF paths
+        if not pdf_paths and hasattr(self, 'memory'):
+            # Try to get from memory manager
+            stored_paths = self.memory.get_conversation_context("default", "pdf_paths")
+            if stored_paths:
+                import json
+                try:
+                    pdf_paths = json.loads(stored_paths)
+                except:
+                    pdf_paths = []
+        
+        print(f"📄 [ROUTER] Document query: {q[:50]}...")
+        print(f"📄 [ROUTER] Has document_text: {bool(document_text)}")
+        print(f"📄 [ROUTER] PDF paths count: {len(pdf_paths)}")
+        
+        if not document_text and not pdf_paths:
+            return {"success": False, "result": {"content": "❌ No document uploaded. Please upload a PDF or text file first."}}
+        
+        from agents.document_agent import document_agent
+        
+        # Pass pdf_paths to document_agent
+        result = document_agent(
+            context=document_text or "", 
+            query=q, 
+            history=h, 
+            pdf_path=None,
+            pdf_paths=pdf_paths
+        )
+        
+        # Ensure result is properly formatted
         if isinstance(result, dict):
             if "result" in result and isinstance(result["result"], dict):
                 if "content" in result["result"]:
@@ -745,8 +954,8 @@ class IntelligentRouter:
             elif "content" in result:
                 return {"success": True, "result": {"content": result["content"]}}
         
-        # Fallback
         return {"success": True, "result": {"content": str(result)}}
+        
     def _handle_pdf(self, q, c, h):
         if not PDF_AGENT_AVAILABLE or not self.pdf_agent:
             return {"success": False, "content": "❌ PDF agent not available."}
@@ -772,38 +981,55 @@ class IntelligentRouter:
 
     def _coding(self, q, c, h):
         try:
+            print("\n" + "="*60)
+            print("🔍 [ROUTER DEBUG] _coding() CALLED")
+            print(f"🔍 [ROUTER DEBUG] Query: {q[:100]}")
+            print("="*60)
+            
             result = coding_super_agent.code(q, h)
             
-            # Extract the code properly
+            print(f"🔍 [ROUTER DEBUG] result.get('success'): {result.get('success')}")
+            print(f"🔍 [ROUTER DEBUG] result keys: {result.keys() if result else 'None'}")
+            
             if result.get("success"):
                 generated_code = result.get("code", "")
                 explanation = result.get("explanation", "")
                 
-                # Format the output clearly
+                print(f"🔍 [ROUTER DEBUG] generated_code length: {len(generated_code)}")
+                print(f"🔍 [ROUTER DEBUG] explanation length: {len(explanation) if explanation else 0}")
+                
                 output = f"💻 **Code Generated**\n\n```python\n{generated_code}\n```\n\n"
                 if explanation:
                     output += f"📖 **Explanation:**\n{explanation}\n"
                 
+                # 🔥 PRODUCTION FIX: Ensure all fields at top level
+                return_dict = {
+                    "agent_used": "coding",
+                    "content": output,
+                    "generated_code": generated_code,
+                    "success": True,
+                    "stage": "generated"
+                }
+                
+                print(f"🔍 [ROUTER DEBUG] RETURNING: agent_used={return_dict['agent_used']}")
+                print(f"🔍 [ROUTER DEBUG] generated_code in return: {len(return_dict['generated_code'])} chars")
+                print("="*60 + "\n")
+                
+                return return_dict
+            else:
+                print(f"🔍 [ROUTER DEBUG] FAILED: {result.get('error', 'Unknown error')}")
+                print("="*60 + "\n")
                 return {
                     "agent_used": "coding",
-                    "stage": "generated",
-                    "generated_code": generated_code,
-                    "result": {"content": output},
-                    "success": True
-                }
-            else:
-                error_msg = result.get("error", "Unknown error")
-                return {
-                    "agent_used": "coding", 
-                    "stage": "failed",
-                    "result": {"content": f"❌ Code generation failed: {error_msg}"},
+                    "content": f"❌ Code generation failed: {result.get('error', 'Unknown error')}",
                     "success": False
                 }
         except Exception as e:
+            print(f"🔍 [ROUTER DEBUG] EXCEPTION: {str(e)}")
+            print("="*60 + "\n")
             return {
                 "agent_used": "coding",
-                "stage": "failed", 
-                "result": {"content": f"❌ Code generation failed: {str(e)}"},
+                "content": f"❌ Code generation failed: {str(e)}",
                 "success": False
             }
 
@@ -843,47 +1069,16 @@ class IntelligentRouter:
             return {"content": "Web knowledge not available", "success": False}
         try:
             result = ask_knowledge(q)
-            # 🔥 Better formatting
+            # Better formatting
             if result and "No relevant knowledge" not in result:
                 return {"content": f"📚 **Information:**\n\n{result}", "success": True}
             else:
                 return {"content": "📚 No relevant knowledge found. Share a URL first and I'll learn about it!", "success": True}
         except Exception as e:
             return {"content": f"Knowledge retrieval failed: {e}", "success": False}
-    def _evolution(self, q, c, h):
-        """Run system evolution analysis"""
-        if not self.evolution_advisor:
-            return {"content": "⚠️ Evolution Advisor not available. Please check initialization.", "success": False}
-        
-        try:
-            # Run full evolution cycle
-            result = self.evolution_advisor.run_full_evolution_cycle()
-            
-            # Format response
-            analysis = result.get("analysis", {})
-            roadmap = result.get("roadmap", {})
-            pdf_report = result.get("pdf_report", "")
-            
-            response = f"""🔬 **System Evolution Analysis**
+    
+    
 
-    📊 **System Score:** {analysis.get('system_score', 0)}/100
-    📈 **Score Change:** {analysis.get('score_change_from_last_cycle', 0)} points
-
-    🔧 **Missing Features:**
-    {', '.join(analysis.get('missing_advanced_features', [])[:5])}
-
-    🗺️ **Evolution Roadmap:**
-    • Immediate: {roadmap.get('Immediate Upgrade', [])}
-    • Status: {roadmap.get('Status', 'Unknown')}
-
-    📄 **PDF Report Generated:** {os.path.basename(pdf_report) if pdf_report else 'Not generated'}
-
-    💡 Use 'evolution status' to check again later."""
-            
-            return {"content": response, "success": True, "data": result}
-            
-        except Exception as e:
-            return {"content": f"❌ Evolution analysis failed: {str(e)}", "success": False}
 def get_system_problems():
     from agents.system_health_agent import SystemHealthAgent
     return SystemHealthAgent().full_system_scan()
@@ -900,7 +1095,6 @@ def start_background_self_healing():
     threading.Thread(target=run, daemon=True).start()
 
 def run_full_self_heal(apply_permanent=False):
-    from agents.master_autofix_agent import MasterAutoFixAgent  # ← YEH LINE ADD KARO
     logs = ["🧠 MASTER SELF-HEAL STARTED"]
     try:
         problems = get_system_problems()
@@ -908,17 +1102,17 @@ def run_full_self_heal(apply_permanent=False):
             logs.append("✅ System already healthy")
             return "\n".join(logs)
         logs.append(f"⚠️ {len(problems)} problems detected")
-        master = MasterAutoFixAgent()
-        for problem in problems:
-            fix = generate_ai_fix(problem)
-            result = master.run_autofix_pipeline([problem], [fix], apply_permanent=apply_permanent)
-            if "success" in result.lower():
-                logs.append(f"✅ Fixed: {getattr(problem, 'title', 'Unknown')}")
-            else:
-                logs.append(f"❌ Failed: {getattr(problem, 'title', 'Unknown')}")
+        
+        # ❌ AUTO-FIX DISABLED - Only manual button click!
+        # master = MasterAutoFixAgent()
+        # for problem in problems:
+        #     fix = generate_ai_fix(problem)  # TOKEN WASTE!
+        #     result = master.run_autofix_pipeline(...)
+        
+        logs.append("💡 Click 'Generate & Test Fix' button to fix")
     except Exception as e:
         logs.append(f"❌ Error: {e}")
-    logs.append("🏁 SELF-HEAL FINISHED")
+    logs.append("🏁 SCAN COMPLETE")
     return "\n".join(logs)
 
 router = IntelligentRouter()

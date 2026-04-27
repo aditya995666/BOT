@@ -2,14 +2,25 @@
 Self Improvement Engine - Continuously improves system performance
 """
 
+import sys
 import time
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 import threading
 
+
+def _safe_print(msg: str) -> None:
+    """Avoid UnicodeEncodeError on Windows cp1252 consoles."""
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        enc = getattr(sys.stdout, "encoding", None) or "ascii"
+        print(msg.encode(enc, errors="replace").decode(enc, errors="replace"))
+
+
 class SelfImprovementEngine:
     def __init__(self):
-        print("🔄 Initializing Self-Improvement Engine...")
+        _safe_print("Initializing Self-Improvement Engine...")
         
         # Improvement metrics
         self.improvement_history = []
@@ -29,7 +40,7 @@ class SelfImprovementEngine:
         self.learning_thread = threading.Thread(target=self._background_learning, daemon=True)
         self.learning_thread.start()
         
-        print("✅ Self-Improvement Engine initialized")
+        _safe_print("Self-Improvement Engine initialized")
     
     def analyze_agent_performance(self, agent_name: str, interaction_data: Dict[str, Any]):
         """Analyze performance of a specific agent"""
@@ -71,11 +82,11 @@ class SelfImprovementEngine:
             agent_stats["avg_response_time"] = sum(agent_stats["response_times"]) / len(agent_stats["response_times"])
             
         except Exception as e:
-            print(f"⚠️ Performance analysis error: {e}")
+            _safe_print(f"Performance analysis error: {e}")
     
     def learning_cycle(self):
         """Run one learning cycle"""
-        print("🧠 Running learning cycle...")
+        _safe_print("Running learning cycle...")
         
         try:
             # Analyze performance trends
@@ -102,12 +113,12 @@ class SelfImprovementEngine:
             if len(self.improvement_history) > 100:
                 self.improvement_history = self.improvement_history[-100:]
             
-            print(f"✅ Learning cycle completed. Found {len(improvements)} improvements")
+            _safe_print(f"Learning cycle completed. Found {len(improvements)} improvements")
             
             return improvement_entry
             
         except Exception as e:
-            print(f"❌ Learning cycle error: {e}")
+            _safe_print(f"Learning cycle error: {e}")
             return {"error": str(e)}
     
     def _analyze_performance_trends(self) -> Dict[str, Any]:
@@ -234,7 +245,7 @@ class SelfImprovementEngine:
                 try:
                     self.learning_cycle()
                 except Exception as e:
-                    print(f"⚠️ Background learning error: {e}")
+                    _safe_print(f"Background learning error: {e}")
     
     def get_improvement_report(self) -> Dict[str, Any]:
         """Get improvement report"""
@@ -272,7 +283,7 @@ class SelfImprovementEngine:
         self.learning_active = False
         if self.learning_thread.is_alive():
             self.learning_thread.join(timeout=2)
-        print("🛑 Self-Improvement Engine stopped")
+        _safe_print("Self-Improvement Engine stopped")
 
 
 # Create global instance

@@ -11,7 +11,7 @@ class ClarificationEngine:
     def __init__(self):
         self.brain = GeminiBrain()
         self.question_history = {}  # Track questions per user
-        self.max_questions = 2  # Max 2 questions per topic
+        self.max_questions = 1  # Max 2 questions per topic
 
     def analyze_query(self, query: str, intent: str, history: list, user_id="default"):
         """
@@ -65,32 +65,28 @@ class ClarificationEngine:
         history_str = "\n".join(safe_history) if safe_history else "No history"
 
         prompt = f"""
-You are an AI query clarity evaluator. You can ask MAXIMUM 1 question.
+You are an AI query clarity evaluator. You ask ONLY when TRULY necessary.
 
 User query: "{query}"
 Detected intent: {intent}
-Previous questions asked: {', '.join(recent_questions) if recent_questions else 'None'}
-Conversation history:
-{history_str}
+Conversation history: {history_str if history_str else 'None'}
 
-IMPORTANT RULES:
-1. Ask ONLY if ABSOLUTELY necessary
-2. Ask MAXIMUM 1 question
-3. Don't repeat same question twice
-4. If user gave short answer (yes/no), assume they're answering previous question
-5. For coding requests:
-   - If language not specified -> ask language ONCE
-   - If features not specified -> ask features ONCE
-   - After that -> assume clear
-6. Greetings are always clear
+🔴 CRITICAL RULES - NO MANUAL KEYWORDS:
+1. Ask for clarification ONLY if query is COMPLETELY ambiguous (like "something", "tell me", "that thing")
+2. If user has provided ANY meaningful information → NOT unclear (even if not perfect)
+3. For coding requests: Assume user wants code in Python unless specified otherwise
+4. For document requests: If user said "from pdf" or "from document" → already clear
+5. For knowledge requests: If user asked "what is", "how to", "explain" → already clear
+6. NEVER ask clarification just because you want more details
+7. If in doubt, assume CLEAR (default to False)
 
-Respond ONLY in JSON:
-{{
- "unclear": true/false,
- "question": "clarification question or null"
-}}
+Ask clarification ONLY when:
+- Query is extremely short with zero context (1-2 vague words)
+- Truly no way to determine what user wants
+
+Return ONLY JSON:
+{{"unclear": true/false, "question": "clarification question or null"}}
 """
-
         try:
             response_text = self.brain.think(prompt)
             

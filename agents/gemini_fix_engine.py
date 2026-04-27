@@ -1,14 +1,24 @@
 """
-Gemini Fix Agent
+Gemini Fix Agent - LAZY LOAD VERSION
 Generates MACHINE-READABLE multi-file fixes
 for the JARVIS Self-Healing AI system.
+NO API CALLS UNTIL ACTUALLY NEEDED!
 """
 
-from brain.gemini_llm import GeminiBrain
 import os
 import re
 
-brain = GeminiBrain()
+# 🔥 LAZY LOAD - Brain sirf tab initialize hoga jab zaroorat hogi
+_brain = None
+
+def _get_brain():
+    """Lazy load GeminiBrain - ONLY when actually needed"""
+    global _brain
+    if _brain is None:
+        print("🧠 [LAZY] Loading GeminiBrain for Fix Engine (first time)...")
+        from brain.gemini_llm import GeminiBrain
+        _brain = GeminiBrain()
+    return _brain
 
 # ========== FALLBACK: Load project code if function missing ==========
 def load_full_project_code():
@@ -43,7 +53,17 @@ def generate_fix_with_gemini(problem, extra_context=""):
     """
     Generates MACHINE-READABLE multi-file fixes.
     Output format is STRICT so MasterAutoFixAgent can parse it.
+    LAZY LOAD - Only calls API when actually invoked!
     """
+    
+    # 🔥 DUMMY MODE CHECK - Token bachane ka mantra
+    if os.getenv("GEMINI_MODE", "real") == "dummy":
+        print("🎭 [GEMINI FIX ENGINE] DUMMY MODE - No API call")
+        title = getattr(problem, "title", "Unknown Problem")
+        return _generate_fallback_fix(
+            {"title": title}, 
+            "Dummy mode enabled - no API call made"
+        )
     
     # ------------------------------------------------------------
     # SAFE PROBLEM EXTRACTION
@@ -112,11 +132,15 @@ Rules:
 """
 
     # ------------------------------------------------------------
-    # CALL GEMINI
+    # 🔥 LAZY LOAD - CALL GEMINI ONLY NOW
     # ------------------------------------------------------------
     try:
+        print("🔄 [GEMINI FIX ENGINE] Calling Gemini API...")
+        brain = _get_brain()  # 🔥 LAZY LOAD - Pehli baar brain initialize
         fix_response = brain.think(prompt)
+        print("✅ [GEMINI FIX ENGINE] Response received")
     except Exception as e:
+        print(f"❌ [GEMINI FIX ENGINE] API call failed: {e}")
         return _generate_fallback_fix(problem_dict, str(e))
     
     # ------------------------------------------------------------
@@ -125,7 +149,7 @@ Rules:
     if not fix_response:
         return _generate_fallback_fix(problem_dict, "Empty response")
     
-    # 🔥 FIX: Extract valid fix blocks even if format is slightly off
+    # Extract valid fix blocks even if format is slightly off
     cleaned_response = _extract_fix_blocks(fix_response)
     
     if not cleaned_response or "FILE:" not in cleaned_response:
@@ -177,3 +201,6 @@ CODE:
 
 # Manual intervention required
 FIX_END"""
+
+# 🔥 EXPORT - Same interface as before
+__all__ = ['generate_fix_with_gemini']

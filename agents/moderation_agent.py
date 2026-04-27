@@ -52,11 +52,7 @@ import re
 
 # 🔴 Porn / Adult keywords (expandable)
 PORN_KEYWORDS = [
-    "porn", "sex", "xxx", "xnxx", "xvideos", "onlyfans",
-    "nude", "nudity", "blowjob", "handjob", "anal",
-    "pussy", "penis", "dick", "cock", "boobs",
-    "orgasm", "cum", "moaning", "erotic",
-    "adult video", "sex video", "porn video"
+     "porn video"
 ]
 
 def normalize(text: str) -> str:

@@ -33,6 +33,7 @@ class BrowserControlAgent:
             return self._chrome_path
             
         possible_paths = [
+            
             r"C:\Program Files\Google\Chrome\Application\chrome.exe",
             r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
             os.path.expanduser(r"~\AppData\Local\Google\Chrome\Application\chrome.exe"),

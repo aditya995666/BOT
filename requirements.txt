@@ -13,11 +13,8 @@ pytesseract>=0.3.0
 pdfplumber>=0.10.0
 speechrecognition>=3.10.0
 gtts>=2.3.0
-<<<<<<< HEAD
 pytesseract
 opencv-python
-=======
->>>>>>> a4d0963b225e4645c954c7d91d65fd65c4e65970
 sounddevice>=0.4.0
 whisper>=1.0.0
 openai-whisper>=20231117
@@ -41,9 +38,9 @@ requests
 fastapi uvicorn[standard]
 seleniumpip 
 playwright
-<<<<<<< HEAD
-playwright 
 apscheduler
-=======
-playwright 
->>>>>>> a4d0963b225e4645c954c7d91d65fd65c4e65970
+beautifulsoup4 
+gitpython 
+youtube-transcript-api 
+pypdf
+nltk
