@@ -215,3 +215,38 @@ ERROR/BUG DESCRIPTION:
 
 FIXED CODE:
 """
+
+# Multi-file project generation prompt
+FULL_PROJECT_PROMPT = """
+You are a senior software architect. Generate a COMPLETE project for: {query}
+
+PROJECT TYPE: {project_type}
+FILES NEEDED: {files_needed}
+
+🔴 CRITICAL REQUIREMENTS 🔴
+1. Generate ALL files listed above
+2. Each file must have MINIMUM 100-200 lines of production-quality code
+3. Code must be complete and runnable
+4. Include proper imports, error handling, comments
+5. Follow PEP 8, include type hints and docstrings
+
+Return EXACTLY in this JSON format (no other text):
+
+{{
+  "project_name": "project-name",
+  "description": "Brief description",
+  "files": [
+    {{"path": "main.py", "content": "full code here with minimum 100 lines"}},
+    {{"path": "utils.py", "content": "full code here"}},
+    {{"path": "requirements.txt", "content": "dependencies"}},
+    {{"path": "README.md", "content": "# Project Title\\n\\n## Installation"}}
+  ],
+  "how_to_run": "python main.py"
+}}
+
+Make sure:
+- Each file's content is COMPLETE and USABLE
+- Code has proper structure (classes/functions)
+- Include docstrings and comments
+- Handle errors appropriately
+"""
