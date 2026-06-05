@@ -7,6 +7,7 @@ from handlers.browser_handler import BrowserHandler
 from handlers.research_handler import ResearchHandler
 from concurrent.futures import ThreadPoolExecutor
 import uuid
+import hashlib  # Add this line
 from threading import Lock
 from agents.master_agent import master_agent  
 from agents.master_autofix_agent import MasterAutoFixAgent
@@ -15,7 +16,24 @@ _AUTOCLICKER_PRINTED = False
 _AGENTS_PRINTED = False
 _OCR_PRINTED = False
 _GLOBAL_MEMORY_PRINTED = False
-
+# ========== LANGGRAPH PRODUCTION IMPORTS ==========
+# Ye lines existing imports ke BAAD add karo (line ~10 ke around)
+try:
+    from langgraph.graph import StateGraph, END
+    from langgraph.checkpoint import MemorySaver
+    from typing import TypedDict, List, Dict, Any, Optional
+    import hashlib
+    import json
+    from datetime import datetime
+    import asyncio
+    LANGGRAPH_AVAILABLE = True
+    print("✅ LangGraph Production Ready")
+except ImportError:
+    LANGGRAPH_AVAILABLE = False
+    print("⚠️ LangGraph not installed. Run: pip install langgraph")
+    # Fallback - dummy classes
+    class StateGraph: pass
+    END = None
 # AutoClicker Agent
 try:
     from agents.autoclicker_handler import autoclicker_handler
@@ -297,6 +315,29 @@ class IntelligentRouter:
         self.executor = ThreadPoolExecutor(max_workers=3)
         self.tasks = {}
         self.task_lock = Lock()
+                # ========== LANGGRAPH PRODUCTION SETUP ==========
+        if LANGGRAPH_AVAILABLE:
+            self.langgraph_enabled = True
+            self.langgraph_graph = self._build_langgraph()
+            self.response_cache = {}
+            self.cache_ttl = 3600
+            self.rate_limit = {}
+            print("🚀 LangGraph Production Router Active")
+        else:
+            self.langgraph_enabled = False
+                # ========== SMART CACHE & ANALYTICS ==========
+        from collections import OrderedDict
+        self.smart_cache = OrderedDict()
+        self.cache_max_size = 500
+        self.cache_ttl_seconds = 1800  # 30 minutes
+        self.analytics = {
+            "total_requests": 0,
+            "agent_usage": {},
+            "total_response_time": 0,
+            "cache_hits": 0,
+            "start_time": datetime.now()
+        }
+        print("✅ Smart Cache & Analytics Enabled")
 
     @property
     def brain(self):
@@ -316,6 +357,190 @@ class IntelligentRouter:
             else:
                 safe.append(str(h))
         return safe
+        # ========== LANGGRAPH PRODUCTION METHODS ==========
+    
+    def _build_langgraph(self):
+        """Production-grade LangGraph workflow"""
+        
+        class ProductionState(TypedDict):
+            query: str
+            user_id: str
+            context: Dict
+            history: List
+            intent: Optional[str]
+            result: Dict
+            start_time: float
+            cache_hit: bool
+            retry_count: int
+            error: Optional[str]
+        
+        builder = StateGraph(ProductionState)
+        
+        builder.add_node("rate_limit_check", self._langgraph_rate_limit)
+        builder.add_node("cache_check", self._langgraph_cache_check)
+        builder.add_node("intent_detection", self._langgraph_intent)
+        builder.add_node("safety_check", self._langgraph_safety)
+        builder.add_node("memory_check", self._langgraph_memory)
+        builder.add_node("agent_execution", self._langgraph_execute)
+        builder.add_node("cache_store", self._langgraph_cache_store)
+        builder.add_node("response_format", self._langgraph_format)
+        
+        builder.set_entry_point("rate_limit_check")
+        builder.add_edge("rate_limit_check", "cache_check")
+        
+        builder.add_conditional_edges(
+            "cache_check", 
+            self._langgraph_cache_decision,
+            {"hit": "response_format", "miss": "intent_detection"}
+        )
+        
+        builder.add_edge("intent_detection", "safety_check")
+        builder.add_edge("safety_check", "memory_check")
+        builder.add_edge("memory_check", "agent_execution")
+        builder.add_edge("agent_execution", "cache_store")
+        builder.add_edge("cache_store", "response_format")
+        builder.add_edge("response_format", END)
+        
+        return builder.compile(checkpointer=MemorySaver())
+    
+    def _langgraph_rate_limit(self, state):
+        user_key = f"ratelimit:{state['user_id']}"
+        current_minute = datetime.now().strftime("%Y%m%d%H%M")
+        
+        if state['user_id'] not in self.rate_limit:
+            self.rate_limit[state['user_id']] = {}
+        if current_minute not in self.rate_limit[state['user_id']]:
+            self.rate_limit[state['user_id']][current_minute] = 0
+        
+        self.rate_limit[state['user_id']][current_minute] += 1
+        
+        if self.rate_limit[state['user_id']][current_minute] > 100:
+            state['error'] = "Rate limit exceeded"
+        return state
+    
+    def _langgraph_cache_check(self, state):
+        if not self.langgraph_enabled:
+            return state
+        
+        cache_key = hashlib.md5(f"{state['query']}:{state['user_id']}".encode()).hexdigest()
+        
+        if cache_key in self.response_cache:
+            cache_entry = self.response_cache[cache_key]
+            if (datetime.now() - cache_entry['timestamp']).seconds < self.cache_ttl:
+                state['result'] = cache_entry['response']
+                state['cache_hit'] = True
+                return state
+        
+        state['cache_hit'] = False
+        return state
+    
+    def _langgraph_cache_decision(self, state):
+        return "hit" if state.get('cache_hit') else "miss"
+    
+    def _langgraph_intent(self, state):
+        try:
+            intent = self._detect_intent(state['query'], state.get('context'), state.get('history'))
+            state['intent'] = intent
+        except Exception as e:
+            state['intent'] = "general"
+            state['error'] = str(e)
+        return state
+    
+    def _langgraph_safety(self, state):
+        if not master_agent.is_active():
+            state['error'] = "System disabled by Master Agent"
+            return state
+        
+        ethical_result = master_agent.analyze_ethicality(state['query'])
+        if not ethical_result.get("is_ethical", True):
+            state['error'] = f"Unethical query blocked"
+            return state
+        
+        if MODERATION_AVAILABLE:
+            mod_result = moderate_content(state['query'])
+            if mod_result.get("action") == "BAN":
+                state['error'] = "Blocked by moderation"
+                return state
+        return state
+    
+    def _langgraph_memory(self, state):
+        if NEURAL_AVAILABLE:
+            neural_hint = neural_engine.get_suggestion(state['query'])
+            if neural_hint:
+                if state.get('context') is None:
+                    state['context'] = {}
+                state['context']['neural_hint'] = neural_hint
+        
+        if EPISODIC_AVAILABLE:
+            similar_past = episodic_memory.recall(state['query'], limit=3)
+            if similar_past:
+                if state.get('context') is None:
+                    state['context'] = {}
+                state['context']['similar_past'] = similar_past
+        return state
+    
+    def _langgraph_execute(self, state):
+        max_retries = 3
+        retry_count = 0
+        
+        while retry_count < max_retries:
+            try:
+                state['start_time'] = time.time()
+                intent = state.get('intent', 'general')
+                agent_fn = self.agents.get(intent, self._general)
+                
+                result = self._call_agent_with_fallback(
+                    agent_fn, state['query'],
+                    state.get('context', {}),
+                    state.get('history', []),
+                    intent
+                )
+                
+                state['result'] = result
+                state['retry_count'] = retry_count
+                return state
+            except Exception as e:
+                retry_count += 1
+                if retry_count >= max_retries:
+                    state['error'] = str(e)
+                    state['result'] = {"content": f"Failed: {e}"}
+                    return state
+                time.sleep(2 ** retry_count)
+        return state
+    
+    def _langgraph_cache_store(self, state):
+        if not state.get('cache_hit') and state.get('result') and not state.get('error'):
+            cache_key = hashlib.md5(f"{state['query']}:{state['user_id']}".encode()).hexdigest()
+            self.response_cache[cache_key] = {
+                'response': state['result'],
+                'timestamp': datetime.now()
+            }
+        return state
+    
+    def _langgraph_format(self, state):
+        if state.get('error'):
+            return {
+                "success": False,
+                "error": state['error'],
+                "agent_used": state.get('intent', 'unknown'),
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        response = state.get('result', {})
+        if isinstance(response, dict):
+            if "content" not in response:
+                response = {"content": str(response)}
+        elif isinstance(response, str):
+            response = {"content": response}
+        
+        return {
+            "success": True,
+            "agent_used": state.get('intent', 'general'),
+            "result": response,
+            "cache_hit": state.get('cache_hit', False),
+            "response_time": round(time.time() - state.get('start_time', time.time()), 3),
+            "timestamp": datetime.now().isoformat()
+        }
 
     def submit_task(self, query, user_id="default", context=None, history=None):
         task_id = str(uuid.uuid4())
@@ -368,12 +593,12 @@ class IntelligentRouter:
         # ========== MANUAL KEYWORDS (Only for specific agents as requested) ==========
         
         # AutoClicker - MANUAL (as requested)
-        autoclicker_keywords = ['click', 'press', 'tap', 'double click', 'right click', 'type', 'keyboard', 
-                            'press key', 'scroll', 'mouse', 'auto click', 'autoclicker', 'button', 'submit', 
-                            'ok', 'cancel', 'next', 'previous', 'save', 'delete', 'edit', 'open', 'close', 
-                            'minimize', 'maximize', 'search']
-        if any(kw in ql for kw in autoclicker_keywords):
-            return "autoclicker"
+        # autoclicker_keywords = ['click', 'press', 'tap', 'double click', 'right click', 'type', 'keyboard', 
+        #                     'press key', 'scroll', 'mouse', 'auto click', 'autoclicker', 'button', 'submit', 
+        #                     'ok', 'cancel', 'next', 'previous', 'save', 'delete', 'edit', 'open', 'close', 
+        #                     'minimize', 'maximize', 'search']
+        # if any(kw in ql for kw in autoclicker_keywords):
+        #     return "autoclicker"a
         
         # OS Commands - MANUAL (as requested)
         os_words = ["open app", "close", "shutdown", "type", "click", "run python", "create file", 
@@ -437,26 +662,38 @@ class IntelligentRouter:
         
         # ========== AI-BASED INTENT DETECTION (For remaining: coding, knowledge, general, etc.) ==========
         
+                # ========== AI-BASED INTENT DETECTION ==========
+        
         print(f"🤖 AI Intent Detection: {q[:50]}...")
+        
+        # Check if query has pasted content (long text)
+        has_pasted_content = len(q) > 500 or "```" in q
         
         try:
             prompt = f"""
-            Analyze this user query and classify into ONE intent.
-            
-            Query: "{q}"
-            
-            Intent categories:
-            - coding: asking for code, function, program, algorithm, bug fix, code improvement, writing code
-            - knowledge: asking for information, facts, explanation, how-to, what-is, define, meaning
-            - general: casual chat, greeting, small talk, thanks, bye, how are you
-            - document: asking about uploaded document content
-            - webask: asking about a website or previously learned data (especially if query contains URL)
-            - image: asking about image, photo, picture
-            - voice: asking about voice, audio, speak, bolo
-            - emotion: asking about emotion, sad, happy, feeling
-            
-            Return ONLY the intent name, nothing else.
-            """
+Analyze this user query and classify into ONE intent.
+
+Query: "{q}"
+
+Intent categories:
+- coding: asking for NEW code, function, program, algorithm (NOT asking to explain existing code)
+- knowledge: asking to EXPLAIN or SUMMARIZE content that was just shared, or asking ANY question about pasted text
+- general: casual chat, greeting, small talk, thanks, bye, how are you
+- document: asking about uploaded document file (PDF/DOCX)
+- webask: asking about a website URL
+- image: asking about image, photo, picture
+- voice: asking about voice, audio, speak
+- emotion: asking about emotion, sad, happy, feeling
+
+🔴 CRITICAL RULES:
+1. If user query is LONG (>300 chars) AND contains question words → knowledge
+2. If user is asking "ye kya hai", "explain this", "summary do" → knowledge
+3. If user shared code/text and asking about it → knowledge
+4. If user is asking to GENERATE new code (not explain existing) → coding
+5. If none of above, use general
+
+Return ONLY the intent name, nothing else.
+"""
             result = self.brain.think(prompt).strip().lower()
             
             valid_intents = ["coding", "knowledge", "general", "document", "webask", 
@@ -570,10 +807,49 @@ class IntelligentRouter:
             return {"success": False, "content": f"Research failed: {str(e)}"}
 
     def route(self, query, user_id="default", context=None, history=None):
-    
+        """PRODUCTION ROUTE WITH LANGGRAPH - ALL ORIGINAL FEATURES INTACT"""
+                # ========== SMART CACHE CHECK ==========
+                # ========== SMART CACHE CHECK (WITH INTENT) ==========
+        # Pehle intent detect karo for cache key
+        temp_intent_for_cache = self._detect_intent(query, context, history)
+        
+        cache_key = hashlib.md5(f"{query}:{user_id}:{temp_intent_for_cache}".encode()).hexdigest()
+        
+        if hasattr(self, 'smart_cache') and cache_key in self.smart_cache:
+            cached_time, cached_response = self.smart_cache[cache_key]
+            if (datetime.now() - cached_time).seconds < self.cache_ttl_seconds:
+                self.smart_cache.move_to_end(cache_key)
+                self.analytics["cache_hits"] += 1
+                print(f"✅ SMART CACHE HIT: {query[:50]}... (intent: {temp_intent_for_cache})")
+                return cached_response
+            else:
+                del self.smart_cache[cache_key]
+                print(f"⏰ Cache expired for: {query[:50]}...")
+        
+        # ========== LANGGRAPH WRAPPER (PRODUCTION) ==========
+        if self.langgraph_enabled:
+            initial_state = {
+                "query": query,
+                "user_id": user_id,
+                "context": context or {},
+                "history": history or [],
+                "intent": None,
+                "result": {},
+                "start_time": time.time(),
+                "cache_hit": False,
+                "retry_count": 0,
+                "error": None
+            }
+            try:
+                final_state = self.langgraph_graph.invoke(initial_state)
+                if final_state and final_state.get("result"):
+                    return final_state
+            except Exception as e:
+                print(f"⚠️ LangGraph failed: {e}, using original route")
+        
+        # ========== ORIGINAL ROUTE - NO FEATURE MISSING ==========
+        
         # ========== EPISODIC MEMORY & NEURAL ENGINE ==========
-    
-        # Get neural engine suggestion (mistakes to avoid)
         if NEURAL_AVAILABLE:
             neural_hint = neural_engine.get_suggestion(query)
             if neural_hint:
@@ -581,7 +857,6 @@ class IntelligentRouter:
                 context = context or {}
                 context["neural_hint"] = neural_hint
         
-        # Recall similar past interactions
         if EPISODIC_AVAILABLE:
             similar_past = episodic_memory.recall(query, limit=3)
             if similar_past:
@@ -589,12 +864,7 @@ class IntelligentRouter:
                 context = context or {}
                 context["similar_past"] = similar_past
         
-        # ========== YOUR EXISTING CODE CONTINUES ==========
-        # ... (rest of your route method)
-    
-        # ========== STEP 0: SESSION CONTEXT MEMORY (USING MEMORY MANAGER) ==========
-        
-        # 🔥 Store ANY content using MEMORY MANAGER (not self.session_context)
+        # ========== STEP 0: SESSION CONTEXT MEMORY ==========
         is_content_shared = (
             "```" in query or
             "def " in query or
@@ -616,12 +886,10 @@ class IntelligentRouter:
             else:
                 content_type = "text"
             
-            # 🔥 USE MEMORY MANAGER INSTEAD OF self.session_context
             self.memory.store_conversation_context(user_id, "last_content", query)
             self.memory.store_conversation_context(user_id, "last_content_type", content_type)
             print(f"📝 [CONTEXT] Stored {content_type} content for user {user_id}")
         
-        # 🔥 Retrieve context using MEMORY MANAGER
         reference_keywords = [
             "esko", "isko", "ye", "yeh", "this", "that", "it", "these",
             "is content ko", "this content", "that content",
@@ -630,7 +898,6 @@ class IntelligentRouter:
         ]
         
         if any(kw in query.lower() for kw in reference_keywords):
-            # 🔥 USE MEMORY MANAGER
             previous_content = self.memory.get_conversation_context(user_id, "last_content")
             content_type = self.memory.get_conversation_context(user_id, "last_content_type")
             
@@ -649,11 +916,10 @@ class IntelligentRouter:
                     "content": f"[Previous content shared by user]:\n{previous_content}\n\n[Current query]: {query}"
                 })
         
-        # ========== EXISTING CODE CONTINUES ==========
+        # ========== INTENT DETECTION ==========
         temp_intent = self._detect_intent(query, context, history)
-        # ... rest of your existing code (same as before)
         
-        # 🔥 FIX: Coding intent ke liye directly coding agent call karo
+        # ========== CODING INTENT DIRECT HANDLING ==========
         if temp_intent == "coding":
             print("🎯 Coding intent - calling coding agent directly")
             intent = "coding"
@@ -661,14 +927,9 @@ class IntelligentRouter:
             result = self._call_agent_with_fallback(agent_fn, query, context, history, intent)
             return result
         
-        # ========== REST FOR OTHER INTENTS ==========
-        # Normal clarification check for other intents
-        # ========== REST FOR OTHER INTENTS ==========
-        
-        # 🔥 SKIP CLARIFICATION FOR DOCUMENT INTENT WHEN PDF UPLOADED
+        # ========== CLARIFICATION CHECK ==========
         skip_clarification = False
         
-        # Skip if document intent and PDF/document is already uploaded
         if temp_intent == "document":
             if context and context.get("pdf_paths") and len(context.get("pdf_paths", [])) > 0:
                 skip_clarification = True
@@ -677,15 +938,12 @@ class IntelligentRouter:
                 skip_clarification = True
                 print("📄 Skipping clarification - Document text available")
         
-        # Also skip for coding intent (already handled)
         if temp_intent == "coding":
             skip_clarification = True
         
-        # Skip for URL queries
         if self._extract_url(query):
             skip_clarification = True
         
-        # Only run clarification if not skipped
         if not skip_clarification:
             clar_result = clarification_engine.analyze_query(
                 query=query,
@@ -706,20 +964,15 @@ class IntelligentRouter:
                     "timestamp": datetime.now().isoformat()
                 }
         
-        # Rest of your code continues...
+        # ========== URL PROCESSING ==========
         url = self._extract_url(query)
         
-        # ========== STEP 2: Auto URL Processing ==========
         if url and WEB_AGENT_AVAILABLE:
-            # Import web agent functions
             from agents.web_agent import process_url_if_present, is_url_processed, ask_knowledge
             
-            # Check if URL already processed
             if not is_url_processed(url):
-                # Trigger background learning (non-blocking)
                 process_url_if_present(url)
                 
-                # Agar sirf URL hai (without question), toh immediate response
                 if len(query.strip().split()) <= 2:
                     return {
                         "success": True,
@@ -736,7 +989,6 @@ class IntelligentRouter:
                         "timestamp": datetime.now().isoformat()
                     }
             
-            # URL + question = answer from learned data
             ask_keywords = ['kya hai', 'what is', 'tell me', 'about', 'summary', 
                         'content', 'bataye', 'padhkar', 'explain', 'describe']
 
@@ -751,7 +1003,6 @@ class IntelligentRouter:
                         "timestamp": datetime.now().isoformat()
                     }
                 else:
-                    # Still learning or no data
                     return {
                         "success": True,
                         "agent_used": "web_answer",
@@ -759,11 +1010,11 @@ class IntelligentRouter:
                         "timestamp": datetime.now().isoformat()
                     }
         
-        # ========== STEP 3: Master Agent Check ==========
+        # ========== MASTER AGENT CHECK ==========
         if not master_agent.is_active():
             return {"success": False, "reason": "🚨 System disabled by Master Agent"}
         
-        # ========== STEP 4: Ethical Check ==========
+        # ========== ETHICAL CHECK ==========
         ethical_result = master_agent.analyze_ethicality(query)
         if not ethical_result["is_ethical"]:
             if context is None:
@@ -784,9 +1035,7 @@ class IntelligentRouter:
                 "timestamp": datetime.now().isoformat()
             }
         
-        # ========== STEP 5: Memory Check ==========
-        # ========== STEP 5: Memory Check ==========
-        # ========== STEP 5: Memory Check ==========
+        # ========== MEMORY CHECK ==========
         try:
             if len(query.strip()) > 3:
                 has_pdf = (
@@ -803,17 +1052,16 @@ class IntelligentRouter:
                     mem_answer = self.memory.query_knowledge(query, top_k=5)
                     if mem_answer and len(str(mem_answer).strip()) > 30:
                         
-                        # 🔥 YAHI FIX HAI - Grok se summarize karo
                         summary_prompt = f"""User ne poocha: "{query}"
 
-        Niche website ka raw content hai. Iske basis par ek clean, helpful summary do.
-        - Bullet points use karo
-        - Simple language mein likho  
-        - Raw text copy mat karo
-        - 150 words se zyada mat likho
+Niche website ka raw content hai. Iske basis par ek clean, helpful summary do.
+- Bullet points use karo
+- Simple language mein likho  
+- Raw text copy mat karo
+- 150 words se zyada mat likho
 
-        Raw content:
-        {str(mem_answer)[:2000]}"""
+Raw content:
+{str(mem_answer)[:2000]}"""
 
                         try:
                             clean_summary = self.brain.think(summary_prompt)
@@ -824,7 +1072,6 @@ class IntelligentRouter:
                                 "timestamp": datetime.now().isoformat()
                             }
                         except:
-                            # Fallback - raw return
                             return {
                                 "success": True,
                                 "agent_used": "knowledge_memory", 
@@ -833,8 +1080,8 @@ class IntelligentRouter:
                             }
         except Exception as e:
             print(f"Memory knowledge query error: {e}")
-                
-        # ========== STEP 6: Safety Layers ==========
+        
+        # ========== SAFETY LAYERS ==========
         if FIRMWARE_AVAILABLE:
             fw = firmware_controller.inspect(query, history, context)
             if not fw.get("allowed"):
@@ -846,15 +1093,14 @@ class IntelligentRouter:
             if mod_result.get("action") == "BAN":
                 return {"success": False, "reason": "🚫 Blocked by moderation"}
         
-        # ========== STEP 7: Intent Detection & Routing ==========
-        # ========== STEP 7: Intent Detection & Routing ==========
+        # ========== FINAL AGENT EXECUTION ==========
         start = time.time()
-
-        # 🔥 FIX 3: Dobara detect mat karo - temp_intent reuse karo
-        intent = temp_intent  # ← sirf yeh line change karo
+        intent = temp_intent
         agent_fn = self.agents.get(intent, self._general)
 
         result = self._call_agent_with_fallback(agent_fn, query, context, history, intent)
+        
+        # ========== RESULT FORMATTING ==========
         if isinstance(result, dict) and "content" in result:
             pass
         elif isinstance(result, str):
@@ -867,6 +1113,7 @@ class IntelligentRouter:
         else:
             result = {"content": str(result)}
 
+        # ========== CODING AGENT SPECIAL HANDLING ==========
         if intent == "coding" and isinstance(result, dict):
             content = result.get("content", "")
             if not content and "result" in result:
@@ -907,9 +1154,44 @@ class IntelligentRouter:
                 "response": response,
                 "user_id": user_id
             })
+                # ========== UPDATE ANALYTICS & SMART CACHE ==========
+                # ========== UPDATE ANALYTICS & SMART CACHE ==========
+        response_time = round(time.time() - start, 3)
+        
+        # Update analytics
+        self.analytics["total_requests"] += 1
+        self.analytics["agent_usage"][intent] = self.analytics["agent_usage"].get(intent, 0) + 1
+        self.analytics["total_response_time"] += response_time
+        
+        # ========== FIX: Only cache complete responses ==========
+        should_cache = False
+        
+        if response.get("success", True) and hasattr(self, 'smart_cache'):
+            if intent == "coding":
+                # For coding responses, only cache if generated_code is complete (> 100 chars)
+                generated_code = response.get("generated_code") or response.get("result", {}).get("generated_code", "")
+                if len(generated_code) > 100:
+                    should_cache = True
+                    print(f"💾 Caching complete coding response ({len(generated_code)} chars)")
+                else:
+                    print(f"⚠️ Skipping cache - incomplete coding response ({len(generated_code)} chars)")
+            else:
+                # Non-coding responses - cache normally
+                should_cache = True
+        
+        if should_cache:
+            if len(self.smart_cache) >= self.cache_max_size:
+                self.smart_cache.popitem(last=False)
+            self.smart_cache[cache_key] = (datetime.now(), response)
+            print(f"💾 SMART CACHE STORED: {query[:50]}...")
+        
+        # Print analytics summary every 100 requests
+        if self.analytics["total_requests"] % 100 == 0:
+            avg_time = self.analytics["total_response_time"] / self.analytics["total_requests"]
+            cache_rate = (self.analytics["cache_hits"] / self.analytics["total_requests"]) * 100
+            print(f"📊 ANALYTICS: {self.analytics['total_requests']} req | Avg: {avg_time:.2f}s | Cache: {cache_rate:.1f}%")
         
         return response
-    
     def _document(self, q, c, h):
         # 🔥 Get document text from context
         document_text = c.get("document_text") if c else None
@@ -986,36 +1268,73 @@ class IntelligentRouter:
             print(f"🔍 [ROUTER DEBUG] Query: {q[:100]}")
             print("="*60)
             
-            result = coding_super_agent.code(q, h)
+            # ========== DETECT IF USER WANTS MULTI-FILE PROJECT ==========
+            project_keywords = [
+                'project', 'full code', 'complete code', 'multi file', 
+                'multiple files', 'folder', 'app banaye', 'pura code', 
+                'system banaye', 'chatbot project', 'api project',
+                'web app project', 'cli tool', 'scraper'
+            ]
+            
+            is_project_request = any(kw in q.lower() for kw in project_keywords)
+            
+            if is_project_request:
+                print("🎯 PROJECT REQUEST DETECTED - Generating multi-file project")
+                result = coding_super_agent.generate_full_project(q)
+            else:
+                print("🎯 CODE REQUEST DETECTED - Generating single file")
+                result = coding_super_agent.code(q, h)
             
             print(f"🔍 [ROUTER DEBUG] result.get('success'): {result.get('success')}")
             print(f"🔍 [ROUTER DEBUG] result keys: {result.keys() if result else 'None'}")
             
             if result.get("success"):
-                generated_code = result.get("code", "")
-                explanation = result.get("explanation", "")
-                
-                print(f"🔍 [ROUTER DEBUG] generated_code length: {len(generated_code)}")
-                print(f"🔍 [ROUTER DEBUG] explanation length: {len(explanation) if explanation else 0}")
-                
-                output = f"💻 **Code Generated**\n\n```python\n{generated_code}\n```\n\n"
-                if explanation:
-                    output += f"📖 **Explanation:**\n{explanation}\n"
-                
-                # 🔥 PRODUCTION FIX: Ensure all fields at top level
-                return_dict = {
-                    "agent_used": "coding",
-                    "content": output,
-                    "generated_code": generated_code,
-                    "success": True,
-                    "stage": "generated"
-                }
-                
-                print(f"🔍 [ROUTER DEBUG] RETURNING: agent_used={return_dict['agent_used']}")
-                print(f"🔍 [ROUTER DEBUG] generated_code in return: {len(return_dict['generated_code'])} chars")
-                print("="*60 + "\n")
-                
-                return return_dict
+                # Check if this is a multi-file project response
+                if result.get("is_multi_file"):
+                    # Multi-file project response
+                    output = result.get("content", "")
+                    files = result.get("files", [])
+                    project_name = result.get("project_name", "project")
+                    
+                    return_dict = {
+                        "agent_used": "coding",
+                        "content": output,
+                        "files": files,
+                        "project_name": project_name,
+                        "is_multi_file": True,
+                        "success": True,
+                        "stage": "generated"
+                    }
+                    
+                    # Also store first file as generated_code for compatibility
+                    if files and len(files) > 0:
+                        return_dict["generated_code"] = files[0].get("content", "")
+                    
+                    print(f"🔍 [ROUTER DEBUG] Multi-file project with {len(files)} files")
+                    return return_dict
+                else:
+                    # Single file code response
+                    generated_code = result.get("code", "")
+                    explanation = result.get("explanation", "")
+                    
+                    print(f"🔍 [ROUTER DEBUG] generated_code length: {len(generated_code)}")
+                    print(f"🔍 [ROUTER DEBUG] explanation length: {len(explanation) if explanation else 0}")
+                    
+                    output = f"💻 **Code Generated**\n\n```python\n{generated_code}\n```\n\n"
+                    if explanation:
+                        output += f"📖 **Explanation:**\n{explanation}\n"
+                    
+                    return_dict = {
+                        "agent_used": "coding",
+                        "content": output,
+                        "generated_code": generated_code,
+                        "success": True,
+                        "stage": "generated",
+                        "is_multi_file": False
+                    }
+                    
+                    print(f"🔍 [ROUTER DEBUG] RETURNING: agent_used={return_dict['agent_used']}")
+                    return return_dict
             else:
                 print(f"🔍 [ROUTER DEBUG] FAILED: {result.get('error', 'Unknown error')}")
                 print("="*60 + "\n")
@@ -1032,9 +1351,47 @@ class IntelligentRouter:
                 "content": f"❌ Code generation failed: {str(e)}",
                 "success": False
             }
-
     def _knowledge(self, q, c, h):
-        return self.brain.think(q, self._safe_history(h))
+        """Knowledge agent - handles questions about pasted content"""
+        
+        print(f"📚 [KNOWLEDGE AGENT] Processing: {q[:100]}...")
+        
+        # Get last shared content from memory (if user pasted earlier)
+        last_content = self.memory.get_conversation_context("default", "last_content")
+        
+        # Check if current query has pasted content (long text)
+        has_pasted_content = len(q) > 500 or "```" in q
+        
+        if has_pasted_content or last_content:
+            # Use the content (either from current query or memory)
+            content_to_use = q if has_pasted_content else last_content
+            
+            # Limit content length to avoid token issues
+            if len(content_to_use) > 3000:
+                content_to_use = content_to_use[:3000] + "..."
+            
+            prompt = f"""
+You are JARVIS, a helpful AI assistant.
+
+USER'S QUESTION: {q if not has_pasted_content else "Explain/summarize this content"}
+
+CONTENT TO ANALYZE:
+{content_to_use}
+
+INSTRUCTIONS:
+1. If user asked "ye kya hai" or "what is this" → Give a clear summary of what this content is about
+2. If user asked "explain" → Explain step by step
+3. If user asked "summary" → Provide a concise summary
+4. If user asked a specific question → Answer based ONLY on this content
+5. Be helpful and conversational
+
+YOUR ANSWER:
+"""
+            response = self.brain.think(prompt)
+            return response
+        else:
+            # No pasted content, use regular brain
+            return self.brain.think(q, self._safe_history(h))
 
     def _general(self, q, c, h):
         return self.brain.think(q, self._safe_history(h))
@@ -1116,3 +1473,4 @@ def run_full_self_heal(apply_permanent=False):
     return "\n".join(logs)
 
 router = IntelligentRouter()
+####
