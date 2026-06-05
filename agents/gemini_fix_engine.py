@@ -82,55 +82,74 @@ def generate_fix_with_gemini(problem, extra_context=""):
     # ------------------------------------------------------------
     # LOAD FULL PROJECT CODE
     # ------------------------------------------------------------
+        # ------------------------------------------------------------
+    # LOAD FULL PROJECT CODE - WITH SIZE LIMIT
+    # ------------------------------------------------------------
     try:
         full_code = load_full_project_code()
+        # 🔥 NEW: Truncate project code to maximum 5000 chars
+        if len(full_code) > 5000:
+            full_code = full_code[:5000] + "\n... [TRUNCATED - Code too long]"
+            print(f"⚠️ [FIX ENGINE] Project code truncated from {len(full_code)} to 5000 chars")
     except Exception as e:
         full_code = f"# Error loading project code: {e}"
     
+    # 🔥 NEW: Truncate problem description
+    problem_text = f"Title: {title}\nCause: {cause}\nSeverity: {severity}\nSuggested Fix: {fix}"
+    if len(problem_text) > 1000:
+        problem_text = problem_text[:1000] + "\n... [TRUNCATED]"
+    
+    if len(extra_context) > 500:
+        extra_context = extra_context[:500] + "\n... [TRUNCATED]"
+    
     # ------------------------------------------------------------
-    # SIMPLIFIED BUT EFFECTIVE PROMPT
+    # SIMPLIFIED BUT EFFECTIVE PROMPT (SMALLER)
     # ------------------------------------------------------------
     prompt = f"""
-You are fixing a production multi-agent AI system.
+Fix this problem in the codebase.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROBLEM:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Title: {title}
-Cause: {cause}
-Severity: {severity}
-Suggested Fix: {fix}
+{problem_text}
+
 {extra_context}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-FULL PROJECT CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{full_code[:30000]}
+RELEVANT CODE:
+{full_code}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 INSTRUCTIONS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Identify which files need changes
-2. Generate COMPLETE file content (not just changes)
-3. Output in this EXACT format:
-
+1. Output in EXACT format:
 FIX_START
 FILE: path/to/file.py
-CODE:
-<full file content>
-FILE: path/to/another.py
 CODE:
 <full file content>
 FIX_END
 
 Rules:
-- Include ALL files that need changes
 - Provide COMPLETE file content
 - No explanations outside FIX_START/FIX_END
-- No markdown backticks
 - Keep existing working code intact
 """
+    
+    # 🔥 NEW: Check final prompt size
+    if len(prompt) > 8000:
+        print(f"⚠️ [FIX ENGINE] Prompt too large ({len(prompt)} chars), truncating further...")
+        # Reduce code section further
+        full_code = full_code[:2000] + "\n... [TRUNCATED]"
+        prompt = f"""
+Fix this problem.
 
+PROBLEM: {title} - {cause}
+
+RELEVANT CODE:
+{full_code}
+
+Output format:
+FIX_START
+FILE: path/to/file.py
+CODE:
+<full content>
+FIX_END
+"""
     # ------------------------------------------------------------
     # 🔥 LAZY LOAD - CALL GEMINI ONLY NOW
     # ------------------------------------------------------------
