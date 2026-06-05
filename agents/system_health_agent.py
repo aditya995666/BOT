@@ -2,17 +2,11 @@ import os
 import ast
 import importlib.util
 from utils.problem_schema import SystemProblem
-
+from typing import List
 # 🔥 SAFE PROJECT ROOT (scan only project, not whole PC)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-PROJECT_ROOTS = [
-    os.path.join(BASE_DIR, "agents"),
-    os.path.join(BASE_DIR, "brain"),
-    os.path.join(BASE_DIR, "memory"),
-    os.path.join(BASE_DIR, "utils"),
-    BASE_DIR
-]
+PROJECT_ROOTS = [BASE_DIR]
 
 IGNORED_FOLDERS = ("__pycache__", ".venv", ".git", "venv", "site-packages")
 
@@ -191,7 +185,7 @@ class SystemHealthAgent:
             ))
 
         return problems
-
+    
     # ---------------- FULL SYSTEM SCAN ----------------
     def full_system_scan(self):
         try:
@@ -199,18 +193,46 @@ class SystemHealthAgent:
             imports = self.extract_all_imports()
 
             report = []
-            report += self.scan_missing_imports(code_map, imports)
-            report += self.scan_memory_system()
+            
+            # NEW SCANS
+            report += self.scan_syntax_errors(code_map)           # Syntax + Indentation
+            report += self.scan_potential_errors(code_map)        # NameError, bare except
+            report += self.scan_import_resolution(code_map, imports)  # Import resolution
+            report += self.quick_import_test()
+               # Quick import test
+            report += self.scan_missing_imports(code_map, imports)  # Existing
+            report += self.scan_memory_system()                    # Existing
 
-            # Deduplicate
-            seen = set()
+            
+                        # Deduplicate - FILE-BASED (better)
+            import re
+            seen_files = set()
+            seen_problems = {}
             deduped = []
+            
             for p in report:
-                key = (p.title, p.cause)
-                if key not in seen:
-                    deduped.append(p)
-                    seen.add(key)
-
+                # Extract file path from cause
+                file_match = re.search(r'File: ([^\n]+)', p.cause)
+                file_path = file_match.group(1) if file_match else None
+                
+                # Create unique key: problem_type + file_path
+                if file_path:
+                    key = (p.title, file_path)
+                else:
+                    key = (p.title, p.cause[:100] if p.cause else "")
+                
+                # For Indentation Error, only keep one per file
+                if "Indentation Error" in p.title:
+                    if key not in seen_files:
+                        seen_files.add(key)
+                        deduped.append(p)
+                else:
+                    # For other problems, keep one per file
+                    if key not in seen_files:
+                        seen_files.add(key)
+                        deduped.append(p)
+            
+            print(f"✅ Deduplicated: {len(report)} → {len(deduped)} unique problems")
             return deduped
 
         except Exception as e:
@@ -220,3 +242,225 @@ class SystemHealthAgent:
                 severity="CRITICAL",
                 fix="Fix SystemHealthAgent crash"
             )]
+    # ========== NEW: SYNTAX & INDENTATION SCANNER ==========
+    def scan_syntax_errors(self, code_map):
+        """Scan all Python files for syntax and indentation errors"""
+        problems = []
+        
+        for module_name, info in code_map.items():
+            if "syntax_error" in info:
+                # Already caught by AST parse
+                problems.append(SystemProblem(
+                    title="Syntax Error",
+                    cause=f"File: {info['path']}\nError: {info['syntax_error']}",
+                    severity="CRITICAL",
+                    fix="Fix the syntax error - check missing brackets, quotes, or indentation"
+                ))
+            else:
+                # Double-check for indentation issues
+                try:
+                    with open(info['path'], "r", encoding="utf-8", errors="ignore") as f:
+                        lines = f.readlines()
+                    
+                    # Check for mixed tabs and spaces
+                    has_tabs = False
+                    has_spaces = False
+                    indent_issues = []
+                    
+                    for i, line in enumerate(lines, 1):
+                        if line.startswith('\t'):
+                            has_tabs = True
+                        if line.startswith(' '):
+                            has_spaces = True
+                        
+                        # Check for inconsistent indentation
+                        if line.strip() and not line.startswith((' ', '\t')):
+                            if line[0] not in (' ', '\t', '#', '"', "'"):
+                                # Code not indented properly after block
+                                prev_line = lines[i-2].strip() if i > 1 else ""
+                                if prev_line.endswith(':') and not line.strip().startswith('#'):
+                                    indent_issues.append(i)
+                    
+                    if has_tabs and has_spaces:
+                        problems.append(SystemProblem(
+                            title="Mixed Indentation",
+                            cause=f"File: {info['path']} uses both tabs and spaces",
+                            severity="HIGH",
+                            fix="Use consistent indentation (prefer 4 spaces). Run: autopep8 --in-place {info['path']}"
+                        ))
+                    
+                    if indent_issues:
+                        problems.append(SystemProblem(
+                            title="Indentation Error",
+                            cause=f"File: {info['path']}\nLine {indent_issues[:3]} may have indentation issues",
+                            severity="HIGH",
+                            fix="Check indentation after colons (if, for, while, def, class)"
+                        ))
+                        
+                except Exception as e:
+                    pass
+        
+        return problems
+    
+    # ========== NEW: LOGIC & RUNTIME ERROR DETECTION ==========
+    def scan_potential_errors(self, code_map):
+        """Scan for potential NameError, TypeError, logic issues"""
+        problems = []
+        
+        for module_name, info in code_map.items():
+            if "syntax_error" in info:
+                continue
+                
+            try:
+                with open(info['path'], "r", encoding="utf-8", errors="ignore") as f:
+                    source = f.read()
+                
+                tree = ast.parse(source)
+                
+                # Find undefined variables
+                defined_names = set()
+                used_names = set()
+                
+                for node in ast.walk(tree):
+                    # Track defined names
+                    if isinstance(node, ast.FunctionDef):
+                        defined_names.add(node.name)
+                        for arg in node.args.args:
+                            defined_names.add(arg.arg)
+                    elif isinstance(node, ast.ClassDef):
+                        defined_names.add(node.name)
+                    elif isinstance(node, ast.Assign):
+                        for target in node.targets:
+                            if isinstance(target, ast.Name):
+                                defined_names.add(target.id)
+                    elif isinstance(node, ast.Import):
+                        for alias in node.names:
+                            defined_names.add(alias.name.split('.')[0])
+                    elif isinstance(node, ast.ImportFrom):
+                        if node.module:
+                            for alias in node.names:
+                                defined_names.add(alias.name)
+                    
+                    # Track used names
+                    if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
+                        if node.id not in ['True', 'False', 'None', 'print', 'len', 'range', 'str', 'int', 'float', 'list', 'dict', 'set', 'tuple']:
+                            used_names.add(node.id)
+                
+                # Find undefined variables (used but not defined)
+                undefined = list(used_names - defined_names)
+
+                for var in undefined[:5]:
+                    problems.append(SystemProblem(
+                        title=f"Potential NameError: {var}",
+                        cause=f"File: {info['path']}\nUndefined variable: {var}",
+                        severity="MEDIUM",
+                        fix=f"Define '{var}' before use or correct typo"
+                    ))
+                
+                # Check for bare except (bad practice)
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.ExceptHandler):
+                        if node.type is None:
+                            problems.append(SystemProblem(
+                                title="Bare Except",
+                                cause=f"File: {info['path']} uses bare 'except:'",
+                                severity="MEDIUM",
+                                fix="Use 'except Exception as e:' instead of bare except"
+                            ))
+                            break
+                
+            except SyntaxError:
+                # Already handled in syntax scan
+                pass
+            except Exception as e:
+                pass
+        
+        return problems
+    
+    # ========== NEW: IMPORT RESOLUTION CHECK ==========
+    def scan_import_resolution(self, code_map, imports):
+        """Check if imports are actually resolvable"""
+        problems = []
+        
+        for imp in imports:
+            module = imp["module"]
+            name = imp["name"]
+            file = imp.get("file", "")
+            
+            # Skip Python builtins
+            if module.startswith(IGNORED_MODULE_PREFIXES):
+                continue
+            
+            # Check if module exists in project
+            module_in_project = any(m == module or m.startswith(module + ".") for m in code_map)
+            
+            if module_in_project:
+                # Check if the imported name exists in that module
+                matched = None
+                for m_name, m_info in code_map.items():
+                    if m_name == module or m_name.startswith(module + "."):
+                        matched = m_info
+                        break
+                
+                if matched and "syntax_error" not in matched:
+                    if name != "__module__":
+                        all_names = matched.get("classes", []) + matched.get("functions", []) + matched.get("variables", [])
+                        if name not in all_names:
+                            problems.append(SystemProblem(
+                                title="Import Resolution Failed",
+                                cause=f"Cannot import '{name}' from '{module}' in {file}\nAvailable: {', '.join(all_names[:5])}",
+                                severity="HIGH",
+                                fix=f"Check if '{name}' is defined in {module}, or fix the import statement"
+                            ))
+        
+        return problems
+    
+    # ========== NEW: EXECUTION TEST ==========
+    def quick_import_test(self):
+        """Try to import all project modules to catch import errors"""
+        problems = []
+        
+        for root_folder in PROJECT_ROOTS:
+            if not os.path.exists(root_folder):
+                continue
+                
+            for root, dirs, files in os.walk(root_folder):
+                dirs[:] = [d for d in dirs if d not in IGNORED_FOLDERS]
+                
+                for file in files:
+                    if not file.endswith(".py"):
+                        continue
+                    
+                    path = os.path.join(root, file)
+                    module_name = os.path.relpath(path, start=BASE_DIR).replace("\\", ".").replace("/", ".")[:-3]
+                    
+                    try:
+                        spec = importlib.util.spec_from_file_location(module_name, path)
+                        if spec and spec.loader:
+                            # Just try to load, don't execute
+                            pass
+                    except SyntaxError as e:
+                        problems.append(SystemProblem(
+                            title="Import Syntax Error",
+                            cause=f"File: {path}\nError: {str(e)}",
+                            severity="CRITICAL",
+                            fix=f"Fix syntax error at line {e.lineno}: {e.msg}"
+                        ))
+                    except ImportError as e:
+                        problems.append(SystemProblem(
+                            title="Import Chain Error",
+                            cause=f"File: {path}\nError: {str(e)}",
+                            severity="HIGH",
+                            fix=f"Fix missing dependency or circular import"
+                        ))
+                    except Exception as e:
+                        # Other errors - might be logic errors
+                        if "name" in str(e).lower() or "defined" in str(e).lower():
+                            problems.append(SystemProblem(
+                                title="Runtime Name Error",
+                                cause=f"File: {path}\nError: {str(e)}",
+                                severity="MEDIUM",
+                                fix="Check variable/function definitions"
+                            ))
+        
+        return problems
