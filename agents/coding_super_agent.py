@@ -241,7 +241,369 @@ class CodingSuperAgent:
             "ready_for_permanent": self.sandbox_passed and self.integration_passed,
             "function_name": self.function_name
         }
+    def reset(self):
+        """Reset coding agent state"""
+        self.current_code = None
+        self.sandbox_passed = False
+        self.integration_passed = False
+        self.sandbox_result = None
+        self.integration_result = None
+        self.function_name = None
+        self._last_generation_used_fallback = False
+        print("🔄 CodingSuperAgent reset complete")
+    def generate_full_project(self, query: str) -> Dict[str, Any]:
+        """Generate complete multi-file project"""
+        from utils.prompt_templates import FULL_PROJECT_PROMPT
+        
+        _safe_print(f"\n{'='*60}")
+        _safe_print("FULL PROJECT GENERATION STARTED")
+        _safe_print(f"Query: {query[:100]}...")
+        _safe_print(f"{'='*60}")
+        
+        try:
+            # Analyze project type
+            project_analysis = self._analyze_project_request(query)
+            _safe_print(f"Project type: {project_analysis['project_type']}")
+            
+            # Generate using LLM
+            prompt = FULL_PROJECT_PROMPT.format(
+                query=query,
+                project_type=project_analysis['project_type'],
+                files_needed=", ".join(project_analysis['files_needed'])
+            )
+            
+            response = self.brain.think(prompt)
+            _safe_print(f"LLM Response length: {len(response)} chars")
+            
+            # Clean the response - remove markdown code blocks
+            import json
+            cleaned = response.strip()
+            if cleaned.startswith('```json'):
+                cleaned = cleaned[7:]
+            if cleaned.startswith('```'):
+                cleaned = cleaned[3:]
+            if cleaned.endswith('```'):
+                cleaned = cleaned[:-3]
+            cleaned = cleaned.strip()
+            
+            # Try to parse JSON
+            project_data = json.loads(cleaned)
+            
+            if project_data.get("files") and len(project_data.get("files", [])) > 0:
+                self.current_project = project_data
+                output = self._format_project_output(project_data)
+                
+                return {
+                    "success": True,
+                    "content": output,
+                    "project_data": project_data,
+                    "files": project_data.get("files", []),
+                    "project_name": project_data.get("project_name", "project"),
+                    "is_multi_file": True,
+                    "agent_used": "coding"
+                }
+            else:
+                raise ValueError("No files in JSON")
+                
+        except json.JSONDecodeError as je:
+            _safe_print(f"JSON parse failed: {je}")
+            _safe_print(f"Response preview: {response[:300] if 'response' in locals() else 'No response'}")
+            return self._generate_project_from_template(query, project_analysis)
+            
+        except Exception as e:
+            _safe_print(f"Project generation failed: {e}")
+            return self._generate_project_from_template(query, project_analysis)
+            
+        except Exception as e:
+            _safe_print(f"Project generation failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "content": f"❌ Project generation failed: {str(e)}",
+                "agent_used": "coding",
+                "is_multi_file": False
+            }
+            
+            # Step 7: 🔥 CRITICAL - Escape double quotes INSIDE string values
+            # This fixes the "input("You: ")" problem
+            def escape_internal_quotes(match):
+                full_match = match.group(0)
+                key_part = match.group(1)
+                value_part = match.group(2)
+                # Escape double quotes inside the value
+                value_part = value_part.replace('"', '\\"')
+                # Also escape backslashes
+                value_part = value_part.replace('\\', '\\\\')
+                return f'"{key_part}": "{value_part}"'
+            
+            # Apply to all string values
+            json_str = re.sub(r'"([^"]+)":\s*"([^"]*)"', escape_internal_quotes, json_str)
+            
+            # Step 8: Remove literal newlines in strings
+            def clean_newlines(match):
+                content = match.group(1)
+                content = content.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
+                return f'"{content}"'
+            
+            json_str = re.sub(r'"([^"\\]*(?:\\.[^"\\]*)*)"', clean_newlines, json_str)
+            
+            # Step 9: Final cleanup
+            json_str = json_str.replace('\n', ' ').replace('\r', ' ')
+            json_str = re.sub(r'\s+', ' ', json_str)
+                        # Step 8.5: 🔥 CRITICAL - Remove backticks from code content
+            # LLM often wraps code in ```python ... ``` inside JSON strings
+            json_str = re.sub(r'```(?:python)?\s*', '', json_str)
+            json_str = re.sub(r'```\s*', '', json_str)
+            json_str = re.sub(r'\\`\\`\\`', '', json_str)
+            json_str = re.sub(r'\\`\\`', '', json_str)
+            json_str = re.sub(r'\\`', '', json_str)
+            try:
+                project_data = json.loads(json_str)
+                
+                # Validate project data
+                if not project_data.get("files") or len(project_data.get("files", [])) == 0:
+                    _safe_print("No files in JSON, using template")
+                    return self._generate_project_from_template(query, project_analysis)
+                
+                _safe_print(f"✅ JSON parsed successfully with {len(project_data['files'])} files")
+                
+                self.current_project = project_data
+                
+                # Format output
+                output = self._format_project_output(project_data)
+                
+                return {
+                    "success": True,
+                    "content": output,
+                    "project_data": project_data,
+                    "files": project_data.get("files", []),
+                    "project_name": project_data.get("project_name", "project"),
+                    "is_multi_file": True,
+                    "agent_used": "coding",
+                    "generated_code": project_data.get("files", [{}])[0].get("content", "")
+                }
+                
+            except json.JSONDecodeError as je:
+                _safe_print(f"JSON parse failed even after fixes: {je}")
+                _safe_print(f"Problematic JSON preview: {json_str[:500]}...")
+                return self._generate_project_from_template(query, project_analysis)
+            
+        except Exception as e:
+            _safe_print(f"Project generation failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "content": f"❌ Project generation failed: {str(e)}",
+                "agent_used": "coding",
+                "is_multi_file": False
+            }
+    def _analyze_project_request(self, query: str) -> Dict[str, Any]:
+        """Analyze what kind of project user wants"""
+        q_lower = query.lower()
+        
+        project_types = {
+            "chatbot": ["chatbot", "chat bot", "conversational", "chat agent"],
+            "api": ["api", "rest api", "backend", "server", "fastapi", "flask"],
+            "web_app": ["web app", "streamlit", "dashboard", "frontend"],
+            "cli_tool": ["cli", "command line", "terminal tool"],
+            "scraper": ["scraper", "web scraper", "crawler"],
+        }
+        
+        project_type = "general"
+        for ptype, keywords in project_types.items():
+            if any(kw in q_lower for kw in keywords):
+                project_type = ptype
+                break
+        
+        files_needed = {
+            "chatbot": ["main.py", "chatbot.py", "utils.py", "requirements.txt", "README.md"],
+            "api": ["main.py", "routes.py", "models.py", "config.py", "requirements.txt", "README.md"],
+            "web_app": ["app.py", "utils.py", "requirements.txt", "README.md"],
+            "cli_tool": ["cli.py", "utils.py", "setup.py", "requirements.txt", "README.md"],
+            "scraper": ["scraper.py", "utils.py", "requirements.txt", "README.md"],
+            "general": ["main.py", "utils.py", "requirements.txt", "README.md"]
+        }
+        
+        return {
+            "project_type": project_type,
+            "files_needed": files_needed.get(project_type, files_needed["general"])
+        }
+    
+    def _generate_project_from_template(self, query: str, analysis: Dict) -> Dict[str, Any]:
+        """Fallback: Generate project from templates"""
+        project_type = analysis['project_type']
+        project_name = self._slugify(query)[:30]
+        
+        files = self._get_template_files(project_type, project_name)
+        
+        output = f"📁 **Project: {project_name}**\n\n"
+        output += f"📝 **Files Created:** {len(files)}\n\n"
+        output += "### 📄 File Structure:\n```\n"
+        for f in files:
+            output += f"├── {f['path']}\n"
+        output += "```\n\n"
+        output += "### 🚀 **How to Run:**\n```bash\npython main.py\n```\n\n"
+        
+        return {
+            "success": True,
+            "content": output,
+            "files": files,
+            "project_name": project_name,
+            "is_multi_file": True,
+            "agent_used": "coding"
+        }
+    
+    def _get_template_files(self, project_type: str, project_name: str) -> List[Dict]:
+        """Get template files based on project type"""
+        
+        templates = {
+            "chatbot": [
+                {"path": "main.py", "content": self._get_main_template(project_name)},
+                {"path": "chatbot.py", "content": self._get_chatbot_template()},
+                {"path": "utils.py", "content": self._get_utils_template()},
+                {"path": "requirements.txt", "content": "# No external dependencies\n# Python 3.8+ only"},
+                {"path": "README.md", "content": f"# {project_name}\n\n## Installation\n```bash\npython main.py\n```"}
+            ],
+            "general": [
+                {"path": "main.py", "content": self._get_main_template(project_name)},
+                {"path": "utils.py", "content": self._get_utils_template()},
+                {"path": "requirements.txt", "content": "# No external dependencies"},
+                {"path": "README.md", "content": f"# {project_name}\n\n## Usage\n```bash\npython main.py\n```"}
+            ]
+        }
+        
+        return templates.get(project_type, templates["general"])
+    
+    def _get_main_template(self, project_name: str) -> str:
+        return f'''"""
+Main entry point for {project_name}
+"""
+import sys
+from typing import Optional
 
+
+def main():
+    """Main function"""
+    print("Welcome to {project_name}!")
+    print("-" * 40)
+    
+    # Your code here
+    pass
+
+
+def solve() -> Optional[str]:
+    """Main solution function"""
+    # Implement your logic here
+    return None
+
+
+if __name__ == "__main__":
+    main()
+'''
+    
+    def _get_chatbot_template(self) -> str:
+        return '''"""
+Chatbot core logic
+"""
+import re
+import random
+from datetime import datetime
+from typing import Dict, List, Optional
+
+
+class ChatBot:
+    """Main chatbot class"""
+    
+    def __init__(self):
+        self.context = []
+        self.responses = self._load_responses()
+    
+    def _load_responses(self) -> Dict:
+        """Load response patterns"""
+        return {
+            "greeting": ["Hello! How can I help you?", "Hi there!", "Hey! Nice to see you!"],
+            "farewell": ["Goodbye!", "See you later!", "Take care!"],
+            "thanks": ["You're welcome!", "Happy to help!", "Anytime!"],
+            "default": ["Interesting! Tell me more.", "I see. Can you elaborate?", "That's fascinating!"]
+        }
+    
+    def get_response(self, user_input: str) -> str:
+        """Generate response based on input"""
+        user_input = user_input.lower().strip()
+        
+        if any(word in user_input for word in ['bye', 'goodbye', 'exit']):
+            return random.choice(self.responses["farewell"])
+        elif any(word in user_input for word in ['hi', 'hello', 'hey']):
+            return random.choice(self.responses["greeting"])
+        elif any(word in user_input for word in ['thanks', 'thank you']):
+            return random.choice(self.responses["thanks"])
+        elif 'time' in user_input:
+            return f"Current time is: {datetime.now().strftime('%I:%M %p')}"
+        
+        return random.choice(self.responses["default"])
+'''
+    
+    def _get_utils_template(self) -> str:
+        return '''"""
+Utility functions
+"""
+import logging
+import sys
+from typing import Any
+
+
+def setup_logging(level: str = "INFO") -> None:
+    """Setup logging configuration"""
+    logging.basicConfig(
+        level=getattr(logging, level.upper()),
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler(sys.stdout)]
+    )
+
+
+def validate_input(data: Any) -> bool:
+    """Validate input data"""
+    return data is not None
+'''
+    
+    def _format_project_output(self, project_data: Dict) -> str:
+        """Format project output for display"""
+        files = project_data.get("files", [])
+        project_name = project_data.get("project_name", "project")
+        
+        output = f"📁 **Project: {project_name}**\n\n"
+        output += f"📝 **Files Created:** {len(files)}\n\n"
+        output += "### 📄 File Structure:\n```\n"
+        for file_info in files:
+            output += f"├── {file_info['path']}\n"
+        output += "```\n\n"
+        output += f"### 🚀 **How to Run:**\n```bash\n{project_data.get('how_to_run', 'python main.py')}\n```\n\n"
+        output += "### 📦 **Download:**\nClick the **Download ZIP** button below to get all files.\n"
+        
+        return output
+    
+    def _slugify(self, text: str) -> str:
+        """Convert text to slug"""
+        import re
+        slug = re.sub(r'[^a-zA-Z0-9\s-]', '', text.lower())
+        slug = re.sub(r'[\s-]+', '-', slug)
+        return slug.strip('-')[:30]
+    
+    def get_downloadable_project(self) -> bytes:
+        """Create zip file of entire project"""
+        import zipfile
+        import io
+        
+        if not hasattr(self, 'current_project') or not self.current_project:
+            return None
+        
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for file_info in self.current_project.get('files', []):
+                zip_file.writestr(file_info['path'], file_info['content'])
+        
+        zip_buffer.seek(0)
+        return zip_buffer.getvalue()
     # ================================================================
     # 🔥 PRODUCTION LEVEL apply_permanent_fix
     # ================================================================
