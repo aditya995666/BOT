@@ -54,7 +54,25 @@ try:
 except Exception as e:
     VOICE_AVAILABLE = False
     sr = None
-
+def extract_failure_reason(logs: str) -> str:
+    """Extract failure reason from logs"""
+    if not logs:
+        return "Unknown failure"
+    
+    lines = logs.split("\n")
+    keywords = ["❌", "error", "exception", "traceback", "failed", "timeout",
+                "syntaxerror", "importerror", "modulenotfounderror",
+                "attributeerror", "nameerror", "typeerror"]
+    
+    bad = []
+    for line in lines:
+        if any(k in line.lower() for k in keywords):
+            bad.append(line.strip())
+    
+    if bad:
+        return "\n".join(bad[:5])
+    
+    return "Tests failed but no clear error found"
 def normalize_router_response(response: dict) -> dict:
     if not isinstance(response, dict):
         return {"agent_used": "unknown", "content": str(response), "success": False}
@@ -612,110 +630,171 @@ if user_input:
                 st.session_state.messages.append({"role": "assistant", "content": assistant_content})
 
                 # 🔥 CODING AGENT HANDLING - FIXED INDENTATION
-                # PEHLE (❌):
-                if True:  # Force execute to show button
-                    st.success("✅ Coding block is executing!")
-                    st.write(f"🔍 FORCED: ...")
-
-                # AB (✅):
-                if data.get("agent_used") == "coding" and data.get("generated_code"):
-                    st.write(f"🔍 FORCED: data keys = {list(data.keys())}")
-                    st.write(f"🔍 FORCED: agent_used = {data.get('agent_used')}")
-
-                    generated_code = data.get("generated_code", "")
-
-                    # Agar generated_code empty hai to content se extract karo
-                    if not generated_code or len(generated_code) < 50:
-                        content = data.get("content", "")
-                        st.write(f"🔍 FORCED: Trying to extract from content (length {len(content)})")
-                        match = re.search(r"```python\n(.*?)\n```", content, re.DOTALL)
-                        if match:
-                            generated_code = match.group(1)
-                            st.info("✅ Code extracted from response")
-                        else:
-                            # Try without python keyword
-                            match = re.search(r"```\n(.*?)\n```", content, re.DOTALL)
+                # ========== CODING AGENT HANDLING ==========
+                                # ========== CODING AGENT HANDLING (Single + Multi-file) ==========
+                if data.get("agent_used") == "coding":
+                    
+                    # ========== CHECK IF MULTI-FILE PROJECT ==========
+                    if data.get("is_multi_file") and data.get("files"):
+                        # Multi-file project display
+                        files = data.get("files", [])
+                        project_name = data.get("project_name", "project")
+                        
+                        st.success(f"📁 **Project: {project_name}** - {len(files)} files generated!")
+                        
+                        # Show file structure
+                        with st.expander("📂 Project Structure", expanded=True):
+                            st.code("\n".join([f"├── {f['path']}" for f in files]), language="text")
+                        
+                        # Show each file content
+                        for file_info in files:
+                            with st.expander(f"📄 {file_info['path']} ({len(file_info['content'])} chars)", expanded=False):
+                                ext = file_info['path'].split('.')[-1]
+                                if ext in ['py', 'python']:
+                                    st.code(file_info['content'], language="python")
+                                elif ext in ['json', 'yaml', 'yml']:
+                                    st.code(file_info['content'], language="json")
+                                elif ext in ['md', 'markdown']:
+                                    st.markdown(file_info['content'])
+                                else:
+                                    st.code(file_info['content'], language="text")
+                        
+                        # Download ZIP button
+                        from agents.coding_super_agent import coding_super_agent
+                        zip_data = coding_super_agent.get_downloadable_project()
+                        if zip_data:
+                            st.download_button(
+                                label="📦 Download Complete Project (ZIP)",
+                                data=zip_data,
+                                file_name=f"{project_name}.zip",
+                                mime="application/zip",
+                                use_container_width=True
+                            )
+                        
+                        # Also show content for conversation
+                        assistant_content = data.get("content", f"✅ Project '{project_name}' generated with {len(files)} files!")
+                        st.session_state.messages[-1]["content"] = assistant_content
+                        
+                    else:
+                        # ========== SINGLE FILE CODE HANDLING ==========
+                        generated_code = data.get("generated_code", "")
+                        
+                        # Agar generated_code empty hai to content se extract karo
+                        if not generated_code or len(generated_code) < 50:
+                            content = data.get("content", "")
+                            match = re.search(r"```python\n(.*?)\n```", content, re.DOTALL)
                             if match:
                                 generated_code = match.group(1)
-                                st.info("✅ Code extracted from generic block")
-
-                    st.write(f"🔍 FORCED: generated_code length = {len(generated_code) if generated_code else 0}")
-
-                    if generated_code and len(generated_code) > 50:
-                        from agents.coding_super_agent import coding_super_agent
-
-                        # Current code set karo
-                        coding_super_agent.current_code = generated_code
-                        func_match = re.search(r'def\s+(\w+)\s*\(', generated_code)
-                        if func_match:
-                            coding_super_agent.function_name = func_match.group(1)
-                            st.write(f"🔍 FORCED: Found function: {func_match.group(1)}")
-
-                        with st.expander("📝 Generated Code", expanded=True):
-                            st.code(generated_code, language="python")
-
-                        status = coding_super_agent.get_status()
-                        st.write(f"🔍 FORCED: Status = {status}")
-
-                        if status.get("ready_for_permanent"):
-                            st.success("🎉 All tests passed! Code is ready.")
-                            if st.button("✅ Add Permanently to Project", key="permanent_btn"):
-                                with st.spinner("Adding code to project..."):
-                                    func_match = re.search(r'def\s+(\w+)\s*\(', generated_code)
-                                    function_name = func_match.group(1) if func_match else None
-                                    result = coding_super_agent.apply_permanent_fix(generated_code, function_name=function_name)
-                                    if result.get("success"):
-                                        st.success(f"✅ Code permanently added to `{result['file']}`")
-                                    else:
-                                        st.error("Failed to add code permanently")
-                        else:
-                            st.info("⚡ Click the button below to run all tests (Sandbox + Integration)")
-                            if st.button("🚀 Run All Tests", key="run_all_tests_btn"):
-                                with st.spinner("Running Sandbox tests..."):
-                                    sandbox_result = coding_super_agent.run_sandbox_test()
-                                    if sandbox_result.get("passed"):
-                                        st.success("✅ Sandbox tests passed!")
-                                        with st.spinner("Running Integration tests..."):
-                                            integration_result = coding_super_agent.run_integration_test()
-                                            if integration_result.get("passed"):
-                                                st.success("✅ Integration tests passed!")
-                                                st.balloons()
-                                                st.rerun()
+                            else:
+                                match = re.search(r"```\n(.*?)\n```", content, re.DOTALL)
+                                if match:
+                                    generated_code = match.group(1)
+                        
+                        if generated_code and len(generated_code) > 50:
+                            from agents.coding_super_agent import coding_super_agent
+                            
+                            # Current code set karo
+                            coding_super_agent.current_code = generated_code
+                            func_match = re.search(r'def\s+(\w+)\s*\(', generated_code)
+                            if func_match:
+                                coding_super_agent.function_name = func_match.group(1)
+                            
+                            with st.expander("📝 Generated Code", expanded=True):
+                                st.code(generated_code, language="python")
+                            
+                            status = coding_super_agent.get_status()
+                            
+                            # Button hamesha dikhega jab tak permanently add nahi hota
+                            if status.get("permanently_added"):
+                                st.success("🎉 Code permanently added to project!")
+                            elif status.get("ready_for_permanent"):
+                                st.success("🎉 All tests passed! Code is ready.")
+                                if st.button("✅ Add Permanently to Project", key="permanent_btn"):
+                                    with st.spinner("Adding code to project..."):
+                                        func_match = re.search(r'def\s+(\w+)\s*\(', generated_code)
+                                        function_name = func_match.group(1) if func_match else None
+                                        result = coding_super_agent.apply_permanent_fix(generated_code, function_name=function_name)
+                                        if result.get("success"):
+                                            st.success(f"✅ Code permanently added to `{result['file']}`")
+                                            coding_super_agent.permanently_added = True
+                                            st.rerun()
+                                        else:
+                                            st.error("Failed to add code permanently")
+                            else:
+                                # ✅ Always show Run button - NO rerun after tests
+                                st.info("⚡ Click the button below to run all tests (Sandbox + Integration)")
+                                
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    if st.button("🚀 Run All Tests", key="run_all_tests_btn"):
+                                        with st.spinner("Running Sandbox tests..."):
+                                            sandbox_result = coding_super_agent.run_sandbox_test()
+                                            
+                                            if sandbox_result.get("passed"):
+                                                st.success("✅ Sandbox tests passed!")
+                                                
+                                                with st.spinner("Running Integration tests..."):
+                                                    integration_result = coding_super_agent.run_integration_test()
+                                                    
+                                                    if integration_result.get("passed"):
+                                                        st.success("✅ Integration tests passed!")
+                                                        st.balloons()
+                                                        # Update status
+                                                        coding_super_agent.sandbox_passed = True
+                                                        coding_super_agent.integration_passed = True
+                                                        st.session_state.coding_state = "ready"
+                                                    else:
+                                                        st.error(f"❌ Integration tests failed: {integration_result.get('error', 'Unknown error')}")
+                                                        # Auto-fix attempt
+                                                        st.info("🔧 Attempting to auto-fix code...")
+                                                        fixed_code = coding_super_agent._fix_code_from_error(
+                                                            coding_super_agent.current_code, 
+                                                            integration_result.get('error', ''), 
+                                                            "integration"
+                                                        )
+                                                        if fixed_code and fixed_code != coding_super_agent.current_code:
+                                                            coding_super_agent.current_code = fixed_code
+                                                            st.success("✅ Code auto-fixed! Click Run Tests again.")
+                                                        else:
+                                                            st.warning("⚠️ Could not auto-fix automatically")
                                             else:
-                                                st.error(f"❌ Integration tests failed: {integration_result.get('result', {}).get('error', 'Unknown error')}")
-                                    else:
-                                        st.error(f"❌ Sandbox tests failed: {sandbox_result.get('result', {}).get('error', 'Unknown error')}")
-                                    st.rerun()
-                            st.info(f"📊 Status: Sandbox={'✅' if status.get('sandbox_passed') else '⏳'} | Integration={'✅' if status.get('integration_passed') else '⏳'}")
-                    else:
-                        st.warning(f"⚠️ No valid code received. Generated code length: {len(generated_code) if generated_code else 0}")
-                        st.write("🔍 FORCED: Please check the response format")
-
+                                                st.error(f"❌ Sandbox tests failed: {sandbox_result.get('error', 'Unknown error')}")
+                                                # Auto-fix attempt
+                                                st.info("🔧 Attempting to auto-fix code...")
+                                                fixed_code = coding_super_agent._fix_code_from_error(
+                                                    coding_super_agent.current_code, 
+                                                    sandbox_result.get('error', ''), 
+                                                    "sandbox"
+                                                )
+                                                if fixed_code and fixed_code != coding_super_agent.current_code:
+                                                    coding_super_agent.current_code = fixed_code
+                                                    st.success("✅ Code auto-fixed! Click Run Tests again.")
+                                                else:
+                                                    st.warning("⚠️ Could not auto-fix automatically")
+                                        
+                                        # DO NOT call st.rerun() - let button stay visible
+                                        st.rerun()  # Remove this line or keep but button will reappear
+                                
+                                with col2:
+                                    if st.button("🔄 Reset Coding", key="reset_coding_btn"):
+                                        if hasattr(coding_super_agent, 'reset'):
+                                            coding_super_agent.reset()
+                                        st.session_state.coding_state = "idle"
+                                        st.session_state.last_generated_code = None
+                                        st.rerun()
+                                
+                                # Show status icons (show real status)
+                                sandbox_passed = coding_super_agent.sandbox_passed
+                                integration_passed = coding_super_agent.integration_passed
+                                sandbox_icon = "✅" if sandbox_passed else "⏳"
+                                integration_icon = "✅" if integration_passed else "⏳"
+                                st.info(f"📊 Status: Sandbox {sandbox_icon} | Integration {integration_icon}")
+                                                        
+                            if not (generated_code and len(generated_code) > 50):
+                                st.warning(f"⚠️ Generated code is too short ({len(generated_code) if generated_code else 0} chars). Please try again.")
         except Exception as e:
             st.session_state.messages.append({"role": "assistant", "content": f"Sorry, error aaya: {str(e)}"})
 
-st.title("JARVIS System Evolution Dashboard")
-
-def trigger_evolution():
-    headers = {"Authorization": f"Bearer {TOKEN}"}
-    try:
-        response = requests.post(OS_API_URL, headers=headers)
-        if response.status_code == 200:
-            data = response.json()
-            pdf_path = data['result']['pdf_report']
-            return pdf_path, "✅ PDF generated successfully!"
-        else:
-            return None, f"❌ Failed: {response.status_code}, {response.text}"
-    except Exception as e:
-        return None, f"❌ Error: {e}"
-
-if st.button("Run Evolution & Generate PDF"):
-    with st.spinner("Running evolution cycle..."):
-        pdf_path, message = trigger_evolution()
-        st.success(message)
-        if pdf_path and os.path.exists(pdf_path):
-            with open(pdf_path, "rb") as f:
-                st.download_button(label="Download Evolution PDF", data=f.read(), file_name=os.path.basename(pdf_path), mime="application/pdf")
 
 st.markdown("---")
 st.markdown("## 🖱️ AutoClicker")
